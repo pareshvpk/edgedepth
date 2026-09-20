@@ -122,9 +122,9 @@ def headline_comparison():
     legend(c, 700, 32, [(RED, "Model Zoo stereonet"), (BLUE, "HailoStereo")])
 
     panels = [
-        dict(title="KITTI 2015 EPE (px, lower is better)", x0=40,
+        dict(title="KITTI 2015 D1 outlier rate (%, lower is better)", x0=40,
              groups=["float", "int8*"],
-             red=[8.223, 10.4], blue=[1.248, 1.430],
+             red=[8.223, 10.4], blue=[6.869, 8.00],
              vmax=12, ticks=[0, 4, 8, 12]),
         dict(title="Compute (GOPS, lower is better)", x0=460,
              groups=[""], red=[112.07], blue=[28.41],

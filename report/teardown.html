@@ -405,7 +405,7 @@ identical = True  (all 11)</pre>
           <span class="chip" data-sev="major">Major</span>
         </div>
         <p>The 12-channel cost volume is bilinearly upsampled 16&times; <em>before</em> the softmax, so the softmax and the argmin run over <strong>5,441,536</strong> elements instead of 21,252 &mdash; a 256&times; increase, with no temperature or scaling term on the logits.</p>
-        <p>An unscaled softmax over int8 logits with a narrow calibrated range flattens toward uniform, which biases the decoded disparity toward the mean of the ramp. This is the most likely single contributor to the <strong>8.22 &rarr; 10.3 EPE</strong> degradation on hardware, and the compile script applies no mixed-precision or per-layer quantization tuning anywhere to mitigate it.</p>
+        <p>An unscaled softmax over int8 logits with a narrow calibrated range flattens toward uniform, which biases the decoded disparity toward the mean of the ramp. This is the most likely single contributor to the <strong>8.22 &rarr; 10.3</strong> degradation on hardware (D1 outlier rate &mdash; see footnote below, not EPE), and the compile script applies no mixed-precision or per-layer quantization tuning anywhere to mitigate it.</p>
         <p class="evidence"><b>Evidence</b> &nbsp;ONNX nodes 128&ndash;132 &middot; <span class="mono">stereonet.alls</span> contains only defuse and normalization commands, no quantization directives</p>
       </div>
     </div>
@@ -500,7 +500,7 @@ identical = True  (all 11)</pre>
 
 <footer>
   <p>Reverse-engineered from <span class="mono">stereonet.onnx</span> (Model Zoo pretrained, 2023-05-31), <span class="mono">stereonet.hef</span> (v2.19.0, hailo8), <span class="mono">cfg/networks/stereonet.yaml</span>, <span class="mono">alls/generic/stereonet.alls</span>, and the upstream reference implementation at <a href="https://github.com/nivosco/StereoNet">nivosco/StereoNet</a>.</p>
-  <p>Graph analysis with onnx 1.16.2; runtime probes with onnxruntime 1.29 on CPU. Published accuracy figures &mdash; float EPE 8.223, hardware EPE 10.3 &mdash; are Hailo's own, quoted unmodified.</p>
+  <p>Graph analysis with onnx 1.16.2; runtime probes with onnxruntime 1.29 on CPU. Published accuracy figures &mdash; 8.223 float, 10.3 hardware &mdash; are Hailo's own, quoted unmodified. <span class="mono">stereonet.yaml</span> labels this field <span class="mono">eval_metric: EPE</span>, but running the original ONNX ourselves on the same 40-frame KITTI split under the official protocol gives EPE 1.300&nbsp;px and D1 8.119% &mdash; a near-exact match to the published 8.223, confirming the published figure is the D1 outlier rate, not EPE. See <span class="mono">notes/compare_models.py</span>.</p>
 </footer>
 
 </div>

@@ -9,21 +9,33 @@ The original was reverse-engineered first — full writeup in
 [report/teardown.html](report/teardown.html). Headline finding: its cost
 volume pads by `d` then slices `[:W]` instead of `[d:d+W]`, so all **12
 disparity hypotheses are bit-identical**. It performs no stereo matching —
-its 8.22 px KITTI score comes from learning a left-to-right brightness
-gradient, which most road scenes already are. Every design decision below
-traces back to a defect ID from that report.
+its real EPE is **1.30 px**, achieved by learning a left-to-right brightness
+gradient, which most road scenes already are. (Hailo's `stereonet.yaml`
+labels its published **8.223** as `eval_metric: EPE`, but running the
+original ONNX ourselves under the official protocol gives EPE 1.300 px and
+D1 8.119% — the published figure is the D1 outlier rate, not EPE. Every EPE
+comparison below is against the real 1.30 px, never the mislabeled 8.22.)
+Every design decision below traces back to a defect ID from that report.
 
 ---
 
 ## 1 · The headline numbers
 
-![Model Zoo stereonet vs HailoStereo — EPE, compute, HEF size](report/charts/headline_comparison.png)
+![Model Zoo stereonet vs HailoStereo — D1 outlier rate, compute, HEF size](report/charts/headline_comparison.png)
 
-Compute is 3.9× lower with *twice* the disparity hypotheses (24 vs 12), and
-the softmax is 32× narrower despite having 2× the channels. The int8 figures
-are on different footing — Model Zoo's is on-device, HailoStereo's is
-DFC-emulated — but the emulator reproduces PyTorch to three decimals (§4), so
-the gap is unlikely to be an artefact.
+The first panel plots **D1 outlier rate**, not EPE — Hailo's published 8.223
+/ 10.4 are D1%, not EPE (see above), so D1 is the only metric Hailo's own
+numbers can be honestly plotted against. On that basis HailoStereo is a
+real but modest 1.20× (float) / 1.30× (int8) better. The **EPE** comparison,
+both sides measured here under the identical protocol, is **1.248 px vs the
+original's 1.300 px** — a genuine but small 1.04× gain; the structural case
+below (real vs. fake disparity search, compute, size) is what this project
+actually rests on, not the accuracy delta. Compute is 3.9× lower with
+*twice* the disparity hypotheses (24 vs 12), and the softmax is 32×
+narrower despite having 2× the channels. The int8 figures are on different
+footing — Model Zoo's is on-device, HailoStereo's is DFC-emulated — but the
+emulator reproduces PyTorch to three decimals (§4), so the gap is unlikely
+to be an artefact.
 
 ### Architecture
 
