@@ -1,6 +1,6 @@
 """
-Datasets for stereo disparity training: SceneFlow (pretrain) and KITTI 2015
-(finetune).
+Datasets for stereo disparity training: SceneFlow (pretrain), KITTI 2015/2012
+and Virtual KITTI 2 (finetune).
 
 Both yield the same contract:
 
@@ -96,6 +96,27 @@ def read_sceneflow_disp(path) -> np.ndarray:
     return np.array(Image.open(path), dtype=np.float32) / SCENEFLOW_PNG_SCALE
 
 
+# Virtual KITTI 2 camera, identical in every frame of every scene (checked
+# across all 42,520 intrinsic/extrinsic rows): f = 725.0087 px, baseline =
+# |C1 - C0| = 0.532725 m. f*B = 386.23 px*m, within 0.1% of real KITTI's 386.5.
+VKITTI2_FOCAL = 725.0087
+VKITTI2_BASELINE = 0.532725
+
+def read_vkitti2_disp(path) -> np.ndarray:
+    """Virtual KITTI 2 depth -> disparity. The PNG is uint16 z-depth in
+    centimetres, dense, with no invalid value; disparity = f * B / z.
+
+    The saturated sky (655.35 m) becomes ~0.59 px, a real "far" target -- the
+    supervision above the horizon that KITTI's LiDAR never provides. The
+    nearest surfaces (~0.94 m) exceed MAX_DISP and are dropped by the usual
+    in-range mask, exactly like out-of-range KITTI GT.
+    """
+    from PIL import Image
+    z_cm = np.array(Image.open(path), dtype=np.float32)
+    z_cm = np.maximum(z_cm, 1.0)          # never divide by zero
+    return (VKITTI2_FOCAL * VKITTI2_BASELINE * 100.0) / z_cm
+
+
 def read_image(path) -> np.ndarray:
     from PIL import Image
     return np.array(Image.open(path).convert("RGB"), dtype=np.float32) / 255.0
@@ -142,12 +163,45 @@ def _valid_mask(disp: np.ndarray) -> np.ndarray:
     return mask.astype(np.float32)
 
 
-def _loss_weight(disp: np.ndarray) -> np.ndarray:
+# Beyond ~40 m (GT disparity under this many px) the model over-reads: it
+# rarely outputs values below ~5.5 px, so far objects come out too near
+# (+1.35 px bias at 5-6 px GT). --far-weight multiplies the loss there.
+NEAR_ZERO_DISP = 10.0
+
+# Closer than ~5 m (GT disparity above this many px) is the weakest band: only
+# 2.77% of KITTI training pixels, and on validation it fails worst on near
+# objects at the frame edges (000161's car, 000164's sign). --near-weight
+# multiplies the loss there.
+NEAR_FIELD_DISP = 75.0
+
+
+def _loss_weight(disp: np.ndarray, far_weight: float = 1.0,
+                 near_weight: float = 1.0,
+                 geometric_border: bool = False) -> np.ndarray:
     """Per-pixel loss weight: 1.0 where matchable, BORDER_WEIGHT on the left
-    edge where the ground truth is valid but no match exists, 0 elsewhere."""
+    edge where the ground truth is valid but no match exists, 0 elsewhere;
+    times far_weight below NEAR_ZERO_DISP and near_weight at or above
+    NEAR_FIELD_DISP.
+
+    The default treats the whole left MAX_DISP-column strip as unmatchable.
+    That is only true of a pixel whose column is less than its disparity: its
+    match x - d falls off the right image. Measured on 320x768 KITTI training
+    crops, 83% of the strip -- 19.5% of every supervised pixel -- is matchable
+    and was being trained at 1/5 weight. geometric_border=True applies
+    BORDER_WEIGHT only where x < d. The metric mask (_valid_mask) is unchanged,
+    so reported numbers stay comparable.
+    """
     in_range = (disp > 0.0) & (disp < float(MAX_DISP)) & np.isfinite(disp)
     weight = in_range.astype(np.float32)
-    weight[:, :MAX_DISP] *= BORDER_WEIGHT
+    if geometric_border:
+        cols = np.arange(disp.shape[1], dtype=np.float32)[None, :]
+        weight[in_range & (cols < disp)] *= BORDER_WEIGHT
+    else:
+        weight[:, :MAX_DISP] *= BORDER_WEIGHT
+    if far_weight != 1.0:
+        weight[in_range & (disp < NEAR_ZERO_DISP)] *= far_weight
+    if near_weight != 1.0:
+        weight[in_range & (disp >= NEAR_FIELD_DISP)] *= near_weight
     return weight
 
 
@@ -171,6 +225,33 @@ def _channel_jitter(img: np.ndarray, rng: random.Random) -> np.ndarray:
     return np.clip(img * gains, 0.0, 1.0)
 
 
+def _rescale(left, right, disp, s):
+    """Rescale a stereo pair by s and its disparity with it. s > 1 turns a real
+    frame into a large-disparity (near) example, s < 1 into a small-disparity
+    (far) one. Disparity is a horizontal pixel distance, so it scales by the
+    width factor actually achieved after rounding.
+
+    The images are bilinear, antialiased when shrinking. The disparity MUST be
+    nearest: KITTI ground truth is sparse LiDAR with 0 meaning "no measurement",
+    and bilinear would blend real depths with those zeros into values that were
+    never measured.
+    """
+    import torch.nn.functional as F
+
+    h, w = disp.shape
+    nh, nw = round(h * s), round(w * s)
+
+    def img(x):
+        t = torch.from_numpy(np.ascontiguousarray(x.transpose(2, 0, 1)))[None]
+        t = F.interpolate(t, size=(nh, nw), mode="bilinear", align_corners=False,
+                          antialias=s < 1.0)
+        return t[0].numpy().transpose(1, 2, 0)
+
+    d = torch.from_numpy(np.ascontiguousarray(disp))[None, None]
+    d = F.interpolate(d, size=(nh, nw), mode="nearest")[0, 0].numpy()
+    return img(left), img(right), d * (nw / w)
+
+
 AUGMENTATIONS = ("basic", "strong")
 
 
@@ -183,7 +264,9 @@ FAR_DISP = 80.0
 
 class _StereoBase(Dataset):
     def __init__(self, samples, crop=(256, 512), training=True, seed=0,
-                 aug="basic", far_crop_bias=False, far_crop_prob=0.5):
+                 aug="basic", far_crop_bias=False, far_crop_prob=0.5,
+                 scale_max=1.0, scale_prob=0.5, scale_min=1.0, far_weight=1.0,
+                 near_weight=1.0, geometric_border=False):
         if aug not in AUGMENTATIONS:
             raise ValueError(f"aug must be one of {AUGMENTATIONS}, got {aug!r}")
         self.samples = samples
@@ -197,6 +280,20 @@ class _StereoBase(Dataset):
         # that happens to miss the large-disparity object entirely.
         self.far_crop_bias = far_crop_bias
         self.far_crop_prob = far_crop_prob
+        # Scale augmentation. The 0-5 m band is the weakest (7.3 px vs ~1.1 px
+        # elsewhere) because only ~1% of KITTI GT is >= FAR_DISP. Upscaling a
+        # frame by s in [1, scale_max] multiplies every disparity by s, making
+        # large-disparity examples from real frames. 1.0 disables it, so
+        # existing runs are unchanged.
+        # scale_min < 1 also shrinks frames, restoring the small-disparity (far)
+        # examples that upscaling alone removes; it is clamped per frame so the
+        # result still covers the crop.
+        self.scale_max = scale_max
+        self.scale_prob = scale_prob
+        self.scale_min = scale_min
+        self.far_weight = far_weight
+        self.near_weight = near_weight
+        self.geometric_border = geometric_border
         self._rng = random.Random(seed)
         self._rng_owner = None
         if not samples:
@@ -259,6 +356,13 @@ class _StereoBase(Dataset):
         ch, cw = self.crop
 
         if self.training:
+            if ((self.scale_max > 1.0 or self.scale_min < 1.0)
+                    and self.rng.random() < self.scale_prob):
+                lo = max(self.scale_min, ch / h, cw / w)
+                s = self.rng.uniform(lo, max(lo, self.scale_max))
+                if s != 1.0:
+                    left, right, disp = _rescale(left, right, disp, s)
+                    h, w = disp.shape
             if h < ch or w < cw:
                 raise ValueError(f"image {h}x{w} smaller than crop {ch}x{cw}")
             y = self._crop_y(disp, h, ch)
@@ -284,7 +388,10 @@ class _StereoBase(Dataset):
             "right": torch.from_numpy(_normalize(right)),
             "disp": torch.from_numpy(disp)[None],
             "mask": torch.from_numpy(_valid_mask(disp))[None],
-            "weight": torch.from_numpy(_loss_weight(disp))[None],
+            "weight": torch.from_numpy(_loss_weight(
+                disp, self.far_weight if self.training else 1.0,
+                self.near_weight if self.training else 1.0,
+                self.geometric_border and self.training))[None],
         }
 
 
@@ -373,7 +480,9 @@ class Kitti2015(_StereoBase):
     """
 
     def __init__(self, root, crop=(256, 512), split="train", n_val=40, seed=0,
-                 aug="basic", far_crop_bias=False, far_crop_prob=0.5):
+                 aug="basic", far_crop_bias=False, far_crop_prob=0.5,
+                 scale_max=1.0, scale_prob=0.5, scale_min=1.0,
+                 far_weight=1.0, near_weight=1.0, geometric_border=False):
         root = pathlib.Path(root)
         lefts = sorted((root / "image_2").glob("*_10.png"))
         samples = []
@@ -388,7 +497,11 @@ class Kitti2015(_StereoBase):
         samples = samples[:-n_val] if split == "train" else samples[-n_val:]
         super().__init__(samples, crop, training=(split == "train"), seed=seed,
                          aug=aug, far_crop_bias=far_crop_bias,
-                         far_crop_prob=far_crop_prob)
+                         far_crop_prob=far_crop_prob,
+                         scale_max=scale_max, scale_prob=scale_prob,
+                         scale_min=scale_min, far_weight=far_weight,
+                         near_weight=near_weight,
+                         geometric_border=geometric_border)
 
     def _read_disp(self, dp):
         return read_kitti_disp(dp)
@@ -420,7 +533,9 @@ class Kitti2012(_StereoBase):
     """
 
     def __init__(self, root, crop=(256, 512), training=True, seed=0, aug="basic",
-                 far_crop_bias=False, far_crop_prob=0.5):
+                 far_crop_bias=False, far_crop_prob=0.5, scale_max=1.0,
+                 scale_prob=0.5, scale_min=1.0, far_weight=1.0,
+                 near_weight=1.0, geometric_border=False):
         root = pathlib.Path(root)
         lefts = sorted((root / "colored_0").glob("*_10.png"))
         samples = []
@@ -434,7 +549,11 @@ class Kitti2012(_StereoBase):
                 f"no KITTI 2012 pairs under {root} -- expected "
                 f"colored_0/, colored_1/, disp_occ/ with *_10.png")
         super().__init__(samples, crop, training=training, seed=seed, aug=aug,
-                         far_crop_bias=far_crop_bias, far_crop_prob=far_crop_prob)
+                         far_crop_bias=far_crop_bias, far_crop_prob=far_crop_prob,
+                         scale_max=scale_max, scale_prob=scale_prob,
+                         scale_min=scale_min, far_weight=far_weight,
+                         near_weight=near_weight,
+                         geometric_border=geometric_border)
 
     def _read_disp(self, dp):
         return read_kitti_disp(dp)
@@ -442,3 +561,63 @@ class Kitti2012(_StereoBase):
     def __getitem__(self, i):
         lp, rp, dp = self.samples[i]
         return self._finish(read_image(lp), read_image(rp), read_kitti_disp(dp))
+
+
+# ---------------------------------------------------------------------------
+# Virtual KITTI 2
+# ---------------------------------------------------------------------------
+
+VKITTI2_VARIANTS = ("clone", "15-deg-left", "15-deg-right", "30-deg-left",
+                    "30-deg-right", "morning", "sunset", "overcast", "fog",
+                    "rain")
+
+
+class VKitti2(_StereoBase):
+    """Virtual KITTI 2 (5 scenes x 10 variants x 2,126 stereo pairs, 1242x375).
+
+    Synthetic clones of KITTI tracking sequences with DENSE ground truth from
+    rendered depth -- including the sky and the near field, the two regions
+    real KITTI's LiDAR leaves unsupervised (the above-horizon "sky is near"
+    drift, and the weakest 0-5 m band). Same rig geometry as KITTI to 0.1%
+    (see VKITTI2_FOCAL), so disparities land on the same scale. Training only;
+    validation stays the real KITTI 2015 40-frame hold-out.
+
+        <root>/SceneXX/<variant>/frames/rgb/Camera_{0,1}/rgb_NNNNN.jpg
+        <root>/SceneXX/<variant>/frames/depth/Camera_0/depth_NNNNN.png
+
+    Camera_0 is the left view.
+    """
+
+    def __init__(self, root, crop=(256, 512), training=True, seed=0,
+                 aug="basic", variants=VKITTI2_VARIANTS, far_crop_bias=False,
+                 far_crop_prob=0.5, scale_max=1.0, scale_prob=0.5,
+                 scale_min=1.0, far_weight=1.0, near_weight=1.0,
+                 geometric_border=False):
+        root = pathlib.Path(root)
+        samples = []
+        for scene in sorted(root.glob("Scene*")):
+            for var in variants:
+                rgb = scene / var / "frames" / "rgb"
+                for lp in sorted((rgb / "Camera_0").glob("rgb_*.jpg")):
+                    rp = rgb / "Camera_1" / lp.name
+                    dp = (scene / var / "frames" / "depth" / "Camera_0" /
+                          lp.name.replace("rgb_", "depth_").replace(".jpg", ".png"))
+                    if rp.exists() and dp.exists():
+                        samples.append((lp, rp, dp))
+        if not samples:
+            raise RuntimeError(
+                f"no Virtual KITTI 2 pairs under {root} -- expected "
+                f"SceneXX/<variant>/frames/{{rgb,depth}}/Camera_0/")
+        super().__init__(samples, crop, training=training, seed=seed, aug=aug,
+                         far_crop_bias=far_crop_bias, far_crop_prob=far_crop_prob,
+                         scale_max=scale_max, scale_prob=scale_prob,
+                         scale_min=scale_min, far_weight=far_weight,
+                         near_weight=near_weight,
+                         geometric_border=geometric_border)
+
+    def _read_disp(self, dp):
+        return read_vkitti2_disp(dp)
+
+    def __getitem__(self, i):
+        lp, rp, dp = self.samples[i]
+        return self._finish(read_image(lp), read_image(rp), read_vkitti2_disp(dp))

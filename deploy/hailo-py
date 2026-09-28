@@ -30,8 +30,15 @@
 #    whole JIT path if the shim ever stops being enough.
 set -euo pipefail
 
-VENV="$HOME/.venvs/hailo-dfc"
-CUDA_DATA="$VENV/cuda-data"
+VENV="${HAILO_VENV:-$HOME/.venvs/hailo-dfc}"
+# DFC 3.x venvs (e.g. ~/.venvs/hailo-dfc3 for hailo8) have no cuda-data shim of
+# their own; fall back to the main venv's copy, which only matters for GPU
+# quantization anyway (HAILO_FORCE_CPU=1 sidesteps it entirely).
+if [[ -f "$VENV/cuda-data/nvvm/libdevice/libdevice.10.bc" ]]; then
+    CUDA_DATA="$VENV/cuda-data"
+else
+    CUDA_DATA="$HOME/.venvs/hailo-dfc/cuda-data"
+fi
 
 if [[ ! -f "$CUDA_DATA/nvvm/libdevice/libdevice.10.bc" ]]; then
     echo "hailo-py: warning: libdevice shim missing at $CUDA_DATA" >&2

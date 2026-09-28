@@ -3,6 +3,7 @@ Verify a stereo dataset's ingest geometrically, before training on it.
 
     python src/check_ingest.py --dataset kitti --root data/kitti2015/training
     python src/check_ingest.py --dataset sceneflow --root data/driving
+    python src/check_ingest.py --dataset vkitti2 --root data/vkitti2
 
 The test: for a rectified pair, the match for left pixel x lies at right pixel
 x - d. So warping the right image by the ground-truth disparity should make it
@@ -28,7 +29,7 @@ import sys
 import numpy as np
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from data import SceneFlow, Kitti2015, Kitti2012, MEAN, STD  # noqa: E402
+from data import SceneFlow, Kitti2015, Kitti2012, VKitti2, MEAN, STD  # noqa: E402
 
 SCALES = (0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0)
 
@@ -47,7 +48,7 @@ def residual(left, right, disp, mask, scale=1.0):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--dataset", choices=("sceneflow", "kitti", "kitti2012"),
+    p.add_argument("--dataset", choices=("sceneflow", "kitti", "kitti2012", "vkitti2"),
                    required=True)
     p.add_argument("--root", required=True)
     p.add_argument("--n", type=int, default=12)
@@ -59,6 +60,10 @@ def main():
         # training=False -> deterministic full-frame crop, the geometry check
         # wants whole frames, not random training crops
         ds = Kitti2012(args.root, training=False)
+    elif args.dataset == "vkitti2":
+        ds = VKitti2(args.root, training=False)
+        # stride across scenes and variants, not the first N frames of Scene01
+        ds.samples = ds.samples[::max(1, len(ds.samples) // args.n)]
     else:
         ds = SceneFlow(args.root, training=False)
     n = min(args.n, len(ds))

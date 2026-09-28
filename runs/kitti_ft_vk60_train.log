@@ -1,0 +1,67 @@
+kitti_mixed: 160 KITTI 2015 + 194 KITTI 2012 = 354 training frames (val stays the KITTI 2015 40)
+vkitti2: 354 Virtual KITTI 2 frames mixed with 354 real KITTI (ratio 1.0)
+initialised strictly from runs/kitti_mixed_fixed768/best.pt
+device cuda | train 708 | val 40 | crop 320x768 | batch 4
+/home/paresh/.local/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/paresh/.local/lib/python3.10/site-packages/torch/autograd/graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/home/paresh/.local/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:143: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+  epoch   0 step     0/177 loss 44.9002 lr 2.00e-06
+  epoch   0 step    50/177 loss 46.5333 lr 2.27e-06
+  epoch   0 step   100/177 loss 47.1169 lr 3.07e-06
+  epoch   0 step   150/177 loss 46.0012 lr 4.36e-06
+epoch   0 | loss 44.8912 | val EPE 1.154 px | D1 6.37% | 20s (ema)
+  new best EPE 1.154 px -> runs/kitti_ft_vk60/best.pt
+  epoch   1 step     0/177 loss 29.2793 lr 5.26e-06
+  epoch   1 step    50/177 loss 34.3833 lr 7.26e-06
+  epoch   1 step   100/177 loss 32.5105 lr 9.68e-06
+  epoch   1 step   150/177 loss 30.2952 lr 1.25e-05
+epoch   1 | loss 28.7560 | val EPE 1.153 px | D1 6.37% | 19s (ema)
+  new best EPE 1.153 px -> runs/kitti_ft_vk60/best.pt
+  epoch   2 step     0/177 loss 20.5965 lr 1.41e-05
+  epoch   2 step    50/177 loss 14.0791 lr 1.73e-05
+  epoch   2 step   100/177 loss 12.9017 lr 2.07e-05
+  epoch   2 step   150/177 loss 11.6039 lr 2.42e-05
+epoch   2 | loss 11.1215 | val EPE 1.163 px | D1 6.46% | 19s (ema)
+  epoch   3 step     0/177 loss 4.0792 lr 2.61e-05
+  epoch   3 step    50/177 loss 7.5023 lr 2.96e-05
+  epoch   3 step   100/177 loss 6.8624 lr 3.31e-05
+  epoch   3 step   150/177 loss 7.1477 lr 3.64e-05
+epoch   3 | loss 7.0921 | val EPE 1.174 px | D1 6.53% | 19s (ema)
+  epoch   4 step     0/177 loss 2.4570 lr 3.81e-05
+  epoch   4 step    50/177 loss 7.1390 lr 4.10e-05
+  epoch   4 step   100/177 loss 6.5885 lr 4.36e-05
+  epoch   4 step   150/177 loss 6.2467 lr 4.58e-05
+epoch   4 | loss 6.3093 | val EPE 1.185 px | D1 6.57% | 16s (ema)
+  epoch   5 step     0/177 loss 6.4333 lr 4.68e-05
+  epoch   5 step    50/177 loss 5.1747 lr 4.84e-05
+  epoch   5 step   100/177 loss 5.2548 lr 4.94e-05
+  epoch   5 step   150/177 loss 5.1771 lr 4.99e-05
+epoch   5 | loss 5.4564 | val EPE 1.192 px | D1 6.63% | 16s (ema)
+  epoch   6 step     0/177 loss 3.3639 lr 5.00e-05
+  epoch   6 step    50/177 loss 4.7419 lr 5.00e-05
+  epoch   6 step   100/177 loss 5.4968 lr 5.00e-05
+  epoch   6 step   150/177 loss 5.2635 lr 5.00e-05
+epoch   6 | loss 5.3180 | val EPE 1.198 px | D1 6.71% | 16s (ema)
+  epoch   7 step     0/177 loss 4.3154 lr 5.00e-05
+  epoch   7 step    50/177 loss 5.7214 lr 4.99e-05
+  epoch   7 step   100/177 loss 5.0845 lr 4.99e-05
+  epoch   7 step   150/177 loss 4.7933 lr 4.99e-05
+epoch   7 | loss 4.6737 | val EPE 1.202 px | D1 6.77% | 16s (ema)
+  epoch   8 step     0/177 loss 4.9872 lr 4.98e-05
+  epoch   8 step    50/177 loss 4.4149 lr 4.98e-05
+  epoch   8 step   100/177 loss 4.0420 lr 4.97e-05
+  epoch   8 step   150/177 loss 4.4663 lr 4.97e-05
+epoch   8 | loss 4.4233 | val EPE 1.207 px | D1 6.84% | 16s (ema)
+  epoch   9 step     0/177 loss 3.7759 lr 4.96e-05
+  epoch   9 step    50/177 loss 4.1448 lr 4.95e-05
+  epoch   9 step   100/177 loss 4.4197 lr 4.95e-05
+  epoch   9 step   150/177 loss 4.8589 lr 4.94e-05
+epoch   9 | loss 4.8438 | val EPE 1.211 px | D1 6.89% | 16s (ema)
+  epoch  10 step     0/177 loss 2.9962 lr 4.93e-05
+  epoch  10 step    50/177 loss 4.6926 lr 4.92e-05
+  epoch  10 step   100/177 loss 5.6390 lr 4.91e-05
+  epoch  10 step   150/177 loss 4.9817 lr 4.90e-05
+epoch  10 | loss 4.7991 | val EPE 1.213 px | D1 6.94% | 16s (ema)

@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import json
 import pathlib
+import subprocess
 import sys
 import time
 
@@ -32,8 +33,8 @@ import torch.nn.functional as F
 from torch.utils.data import ConcatDataset, DataLoader, WeightedRandomSampler
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from model import HailoStereo, MAX_DISP  # noqa: E402
-from data import SceneFlow, Kitti2015, Kitti2012, AUGMENTATIONS  # noqa: E402
+from model import HailoStereo, MAX_DISP, build_model  # noqa: E402
+from data import SceneFlow, Kitti2015, Kitti2012, VKitti2, AUGMENTATIONS  # noqa: E402
 
 # deep supervision: coarse predictions get less weight than the final one
 SCALE_WEIGHTS = (0.5, 0.7, 1.0, 1.0)
@@ -88,12 +89,14 @@ def masked_loss(preds, disp, weight):
 
 
 @torch.no_grad()
-def evaluate(model, loader, device):
+def evaluate(model, loader, device, temp_target=0.0):
     """EPE and D1 (fraction of pixels off by >3px and >5%), the two metrics
     KITTI reports. Masked exactly as training is."""
     model.eval()
     epe_sum = d1_sum = px = 0.0
-    for batch in loader:
+    for i, batch in enumerate(loader):
+        if temp_target > 0:
+            hold_temp(temp_target)  # val runs unpaused and was the hot spot
         left = batch["left"].to(device, non_blocking=True)
         right = batch["right"].to(device, non_blocking=True)
         disp = batch["disp"].to(device, non_blocking=True)
@@ -147,8 +150,14 @@ def build_datasets(args):
               f"{len(kept)} left to train on")
         return train, val
     far_bias = getattr(args, "disp_aware_sampling", False)
+    scale = dict(scale_max=getattr(args, "scale_max", 1.0),
+                 scale_prob=getattr(args, "scale_prob", 0.5),
+                 scale_min=getattr(args, "scale_min", 1.0),
+                 far_weight=getattr(args, "far_weight", 1.0),
+                 near_weight=getattr(args, "near_weight", 1.0),
+                 geometric_border=getattr(args, "geometric_border", False))
     train = Kitti2015(args.root, crop=(args.crop_h, args.crop_w), split="train",
-                      aug=args.aug, far_crop_bias=far_bias)
+                      aug=args.aug, far_crop_bias=far_bias, **scale)
     val = Kitti2015(args.root, crop=(args.crop_h, args.crop_w), split="val")
 
     # KITTI 2012. Same rig and encoding as 2015 (data.py::Kitti2012), 194 more
@@ -159,7 +168,8 @@ def build_datasets(args):
     kitti_parts = [train]
     if args.dataset == "kitti_mixed":
         k2012 = Kitti2012(args.kitti2012_root, crop=(args.crop_h, args.crop_w),
-                          training=True, aug=args.aug, far_crop_bias=far_bias)
+                          training=True, aug=args.aug, far_crop_bias=far_bias,
+                          **scale)
         kitti_parts.append(k2012)
         print(f"kitti_mixed: {len(train)} KITTI 2015 + {len(k2012)} KITTI 2012 "
               f"= {len(train) + len(k2012)} training frames "
@@ -191,8 +201,49 @@ def build_datasets(args):
               f"{base} KITTI (ratio {args.replay_ratio})")
         kitti_parts.append(replay)
 
+    # Virtual KITTI 2. Dense synthetic GT on the KITTI rig -- it supervises the
+    # sky and the near field, which real LiDAR never reaches. Off unless
+    # --vkitti2-root is given. Like replay, a fixed stride subset sized against
+    # the real KITTI base, so synthetic frames cannot drown out real ones;
+    # consecutive frames of one sequence are near-duplicates, so a stride loses
+    # little. Validation is untouched: the KITTI 2015 40-frame hold-out.
+    if getattr(args, "vkitti2_root", None):
+        vk = VKitti2(args.vkitti2_root, crop=(args.crop_h, args.crop_w),
+                     training=True, aug=args.aug, far_crop_bias=far_bias, **scale)
+        base = len(train) + (len(k2012) if args.dataset == "kitti_mixed" else 0)
+        n = min(len(vk.samples), int(round(args.vkitti2_ratio * base)))
+        vk.samples = vk.samples[::max(1, len(vk.samples) // max(n, 1))][:n]
+        print(f"vkitti2: {len(vk.samples)} Virtual KITTI 2 frames mixed with "
+              f"{base} real KITTI (ratio {args.vkitti2_ratio})")
+        kitti_parts.append(vk)
+
     train = kitti_parts[0] if len(kitti_parts) == 1 else ConcatDataset(kitti_parts)
     return train, val
+
+
+def gpu_temp() -> int | None:
+    try:
+        out = subprocess.run(["nvidia-smi", "--query-gpu=temperature.gpu",
+                              "--format=csv,noheader"], capture_output=True,
+                             text=True, timeout=10).stdout
+        return int(out.split()[0])
+    except (OSError, ValueError, IndexError, subprocess.TimeoutExpired):
+        return None
+
+
+def hold_temp(target: float) -> None:
+    """Thermal governor: above `target` C, idle until 1 C below it. Keeps a
+    laptop GPU under a hard cutoff without a long freeze (wall time only).
+    The margin is small on purpose: a heat-soaked laptop idles only a few
+    degrees under the target, so a wide one turns every hold into minutes."""
+    t = gpu_temp()
+    if t is None or t <= target:
+        return
+    t0 = time.time()
+    while t is not None and t > target - 1:
+        time.sleep(2)
+        t = gpu_temp()
+    print(f"  [thermal] held {time.time() - t0:.0f}s, GPU now {t}C", flush=True)
 
 
 def main():
@@ -230,6 +281,13 @@ def main():
     p.add_argument("--replay-ratio", type=float, default=1.0,
                    help="SceneFlow frames per KITTI frame when --replay-root "
                         "is given (1.0 = equal mix)")
+    p.add_argument("--vkitti2-root", default=None,
+                   help="Virtual KITTI 2 root (SceneXX/...) to mix into a KITTI "
+                        "finetune -- dense GT for the sky and near field. Off "
+                        "when omitted.")
+    p.add_argument("--vkitti2-ratio", type=float, default=1.0,
+                   help="Virtual KITTI 2 frames per real KITTI frame when "
+                        "--vkitti2-root is given")
     p.add_argument("--aug", choices=AUGMENTATIONS, default="basic",
                    help="'strong' adds per-channel jitter and asymmetric "
                         "right-view occlusion on top of crop + colour jitter")
@@ -240,11 +298,57 @@ def main():
                    help="oversample KITTI frames carrying GT >= 80 px (3x) and "
                         "bias their crops toward those rows -- attacks the 1%% "
                         "large-disparity supervision share (KITTI branches only)")
+    p.add_argument("--scale-max", type=float, default=1.0,
+                   help="scale augmentation: upscale KITTI pairs (and their "
+                        "disparity) by s in [1, scale-max] to manufacture "
+                        "large-disparity examples; 1.0 disables (KITTI only)")
+    p.add_argument("--scale-prob", type=float, default=0.5,
+                   help="probability a training sample is rescaled")
+    p.add_argument("--scale-min", type=float, default=1.0,
+                   help="lower end of the scale range; < 1 also shrinks frames to "
+                        "restore small-disparity (far) examples; clamped per frame "
+                        "so the crop still fits (KITTI only)")
+    p.add_argument("--far-weight", type=float, default=1.0,
+                   help="loss multiplier on GT disparity below 10 px (beyond "
+                        "~40 m), where the model over-reads; 1.0 disables")
+    p.add_argument("--near-weight", type=float, default=1.0,
+                   help="loss multiplier on GT disparity >= 75 px (closer than "
+                        "~5 m), the weakest band; 1.0 disables")
+    p.add_argument("--geometric-border", action="store_true",
+                   help="down-weight only pixels whose match falls off the right "
+                        "image (x < d), not the whole left 192-column strip; 83%% "
+                        "of that strip is matchable (KITTI only)")
     p.add_argument("--epoch-pause", type=float, default=0.0,
                    help="seconds to sleep after each epoch, to duty-cycle the "
                         "GPU and hold laptop temps down (thermal mitigation; "
                         "does not affect the model, only wall time)")
+    p.add_argument("--step-pause", type=float, default=0.0,
+                   help="seconds to sleep after every optimizer step -- a finer "
+                        "duty cycle than --epoch-pause for GPUs that overheat "
+                        "within one epoch (wall time only)")
+    p.add_argument("--temp-target", type=float, default=0.0,
+                   help="GPU temperature (C) to hold below: checked every "
+                        "step and val batch (~20 ms each); above it, training idles "
+                        "until 3 C cooler. 0 = off (wall time only)")
     p.add_argument("--amp", action="store_true", default=True)
+    # architecture; defaults reproduce the shipped model. Saved as "arch" in
+    # every checkpoint, and --init/--resume take theirs from the checkpoint.
+    p.add_argument("--cost", choices=("sub", "corr", "both"), default="sub",
+                   help="cost-volume form; 'corr'/'both' need ew_mult on device")
+    p.add_argument("--refine", choices=("base", "v2", "v3"), default="base")
+    p.add_argument("--init-partial", action="store_true", default=False,
+                   help="with --init: build the model from the checkpoint arch "
+                        "overridden by --refine, then load every checkpoint "
+                        "tensor whose name AND shape match (lists skipped keys)")
+    p.add_argument("--freeze-epochs", type=int, default=0,
+                   help="for the first N epochs train only refine4/refine2/"
+                        "refine1 (features, cost_volume, aggregation and "
+                        "soft_argmin frozen, their BatchNorm in eval mode)")
+    p.add_argument("--groups", type=int, default=8)
+    p.add_argument("--match-ch", type=int, default=32)
+    p.add_argument("--feat-ch", type=int, default=32)
+    p.add_argument("--n-res", type=int, default=6)
+    p.add_argument("--agg-ch", type=int, default=64)
     args = p.parse_args()
     if not 0.0 <= args.ema < 1.0:
         p.error("--ema must be in [0, 1)")
@@ -253,6 +357,8 @@ def main():
         p.error("crop dimensions must be divisible by 16")
     if args.init and args.resume:
         p.error("--init and --resume are mutually exclusive")
+    if getattr(args, "init_partial", False) and not args.init:
+        p.error("--init-partial needs --init")
 
     out = pathlib.Path(args.out or f"runs/{args.dataset}")
     out.mkdir(parents=True, exist_ok=True)
@@ -288,13 +394,46 @@ def main():
     val_loader = DataLoader(val_set, batch_size=1, shuffle=False,
                             num_workers=max(1, args.workers // 2), pin_memory=True)
 
-    model = HailoStereo().to(device)
-    if args.init:
+    arch = dict(cost=args.cost, groups=args.groups, match_ch=args.match_ch,
+                feat_ch=args.feat_ch, n_res=args.n_res, agg_ch=args.agg_ch,
+                refine=args.refine)
+    src_ckpt = args.init or args.resume
+    if src_ckpt and not (args.init_partial and args.init):
+        # the checkpoint decides the graph; CLI architecture flags are ignored
+        arch = build_model(torch.load(src_ckpt, map_location="cpu",
+                                      weights_only=False)).arch
+    if args.init_partial and args.init:
+        # checkpoint arch, then override `refine` from the CLI
+        ckpt_arch = build_model(torch.load(args.init, map_location="cpu",
+                                           weights_only=False)).arch
+        arch = dict(ckpt_arch)
+        arch["refine"] = args.refine
+    model = HailoStereo(**arch).to(device)
+    print(f"arch {model.arch} | {sum(p.numel() for p in model.parameters()) / 1e6:.2f}M params")
+    if args.init and not args.init_partial:
         ckpt = torch.load(args.init, map_location="cpu", weights_only=False)
         state = ckpt.get("model", ckpt)
         # STRICT -- see EXP-1 in the module docstring
         model.load_state_dict(state, strict=True)
         print(f"initialised strictly from {args.init}")
+    if args.init_partial and args.init:
+        ckpt = torch.load(args.init, map_location="cpu", weights_only=False)
+        state = ckpt.get("model", ckpt)
+        own = model.state_dict()
+        for k, v in state.items():
+            if k in own and tuple(own[k].shape) == tuple(v.shape):
+                own[k].copy_(v)
+        model.load_state_dict(own, strict=True)
+        not_loaded = sorted(k for k in own
+                            if k not in state
+                            or tuple(state[k].shape) != tuple(own[k].shape))
+        not_used = sorted(k for k in state
+                          if k not in own
+                          or tuple(state[k].shape) != tuple(own[k].shape))
+        print(f"initialised partially from {args.init}: "
+              f"{len(own) - len(not_loaded)}/{len(own)} tensors loaded")
+        print(f"  model keys NOT loaded ({len(not_loaded)}): {not_loaded}")
+        print(f"  checkpoint keys NOT used ({len(not_used)}): {not_used}")
 
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
     sched = torch.optim.lr_scheduler.OneCycleLR(
@@ -358,8 +497,34 @@ def main():
     print(f"device {device} | train {len(train_set)} | val {len(val_set)} | "
           f"crop {args.crop_h}x{args.crop_w} | batch {args.batch}")
 
+    # --freeze-epochs: for the first N epochs only the refinement ladder
+    # trains. The optimizer still holds every parameter from the start, so the
+    # OneCycle schedule is unchanged; frozen BatchNorm stays in eval mode.
+    FROZEN_TOPS = ("features", "cost_volume", "aggregation", "soft_argmin")
+
+    def apply_freeze(freeze: bool) -> None:
+        for name, par in model.named_parameters():
+            if name == "soft_argmin.index.weight":
+                par.requires_grad_(False)  # never trained, by design
+            elif name.split(".")[0] in FROZEN_TOPS:
+                par.requires_grad_(not freeze)
+            else:
+                par.requires_grad_(True)
+
     for epoch in range(start_epoch, args.epochs):
+        frozen = 0 < args.freeze_epochs and epoch < args.freeze_epochs
+        apply_freeze(frozen)
         model.train()
+        if frozen:
+            for top in FROZEN_TOPS:
+                for m in getattr(model, top).modules():
+                    if isinstance(m, torch.nn.BatchNorm2d):
+                        m.eval()
+        n_trainable = sum(p.numel() for p in model.parameters()
+                          if p.requires_grad)
+        n_total = sum(p.numel() for p in model.parameters())
+        print(f"epoch {epoch:3d} | frozen={frozen} | "
+              f"trainable {n_trainable}/{n_total}", flush=True)
         t0, running = time.time(), 0.0
         for step, batch in enumerate(train_loader):
             left = batch["left"].to(device, non_blocking=True)
@@ -381,13 +546,19 @@ def main():
                 ema.update_parameters(model)
 
             running += loss.item()
+            if args.step_pause > 0:
+                time.sleep(args.step_pause)
+            if args.temp_target > 0:  # every step: this GPU swings ~7 C in 1-2 s
+                hold_temp(args.temp_target)
             if step % 50 == 0:
                 print(f"  epoch {epoch:3d} step {step:5d}/{len(train_loader)} "
                       f"loss {running / (step + 1):.4f} "
                       f"lr {sched.get_last_lr()[0]:.2e}", flush=True)
 
+        if args.temp_target > 0:
+            hold_temp(args.temp_target)
         scored = model if ema is None else ema.module
-        epe, d1 = evaluate(scored, val_loader, device)
+        epe, d1 = evaluate(scored, val_loader, device, args.temp_target)
         print(f"epoch {epoch:3d} | loss {running / len(train_loader):.4f} | "
               f"val EPE {epe:.3f} px | D1 {d1:.2f}% | {time.time() - t0:.0f}s"
               f"{' (ema)' if ema is not None else ''}",
@@ -396,6 +567,7 @@ def main():
         # "model" is always the weights that were scored, so eval_kitti.py,
         # export_onnx.py and dfc_flow.py pick up the EMA with no changes
         payload = {"model": scored.state_dict(), "epoch": epoch,
+                   "arch": model.arch,
                    "raw_model": model.state_dict() if ema is not None else None,
                    "ema": ema.state_dict() if ema is not None else None,
                    "epe": epe, "d1": d1, "args": vars(args),

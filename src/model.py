@@ -75,13 +75,13 @@ class FeatureNet(nn.Module):
     original's flat 32 channels everywhere (HW-1).
     """
 
-    def __init__(self, match_ch=32):
+    def __init__(self, match_ch=32, feat_ch=32, n_res=6):
         super().__init__()
         self.stem2 = conv_bn_act(3, 16, 3, stride=2)     # 1/2
         self.stem4 = conv_bn_act(16, 24, 3, stride=2)    # 1/4
-        self.stem8 = conv_bn_act(24, 32, 3, stride=2)    # 1/8
-        self.res = nn.Sequential(*[ResBlock(32) for _ in range(6)])
-        self.head = nn.Conv2d(32, match_ch, 3, 1, 1, bias=False)
+        self.stem8 = conv_bn_act(24, feat_ch, 3, stride=2)    # 1/8
+        self.res = nn.Sequential(*[ResBlock(feat_ch) for _ in range(n_res)])
+        self.head = nn.Conv2d(feat_ch, match_ch, 3, 1, 1, bias=False)
 
     def forward(self, x):
         f2 = self.stem2(x)
@@ -147,31 +147,39 @@ class CostVolume(nn.Module):
     Cost is a learned reduction of the feature difference. Subtraction is used
     rather than correlation because ew_sub is proven to compile in this
     pipeline; set cost="corr" to try the (usually stronger) product form once
-    ew_mult is confirmed on the target.
+    ew_mult is confirmed on the target. cost="both" reduces the difference and
+    the product separately and interleaves them, 2*groups channels per
+    hypothesis.
     """
 
     def __init__(self, ch=32, num_disp=NUM_DISP, groups=8, cost="sub"):
         super().__init__()
         assert ch % groups == 0, "channels must divide evenly into groups"
-        assert cost in ("sub", "corr")
+        assert cost in ("sub", "corr", "both")
         self.num_disp = num_disp
         self.groups = groups
         self.cost = cost
         # One shared grouped 1x1 that squeezes the 32-channel cost signature
         # down to `groups` numbers per hypothesis.
         self.reduce = nn.Conv2d(ch, groups, 1, groups=groups, bias=False)
+        if cost == "both":
+            self.reduce_corr = nn.Conv2d(ch, groups, 1, groups=groups, bias=False)
 
     @property
     def out_channels(self) -> int:
-        return self.num_disp * self.groups
+        return self.num_disp * self.groups * (2 if self.cost == "both" else 1)
+
+    def _slice(self, left, rs):
+        if self.cost == "sub":
+            return self.reduce(left - rs)
+        if self.cost == "corr":
+            return self.reduce(left * rs)
+        return torch.cat([self.reduce(left - rs), self.reduce_corr(left * rs)], dim=1)
 
     def forward(self, left, right):
         shifted = _shift_all(right, self.num_disp)
-        slices = [
-            self.reduce(left - rs if self.cost == "sub" else left * rs)
-            for rs in shifted
-        ]
-        return torch.cat(slices, dim=1)          # [B, D*G, H/8, W/8]
+        slices = [self._slice(left, rs) for rs in shifted]
+        return torch.cat(slices, dim=1)          # [B, D*G(*2), H/8, W/8]
 
 
 # --------------------------------------------------------------------------
@@ -256,6 +264,13 @@ class SoftArgmin(nn.Module):
         prob = F.softmax(-cost * self.temperature(), dim=1)
         return self.index(prob)                   # [B,1,H/8,W/8], units of 1/8-res px
 
+    def forward_with_prob(self, cost):
+        """Same as forward, but also returns the softmax probability volume
+        [B,D,H/8,W/8]. Used only by the v2 refinement path; the base graph
+        (forward) is untouched."""
+        prob = F.softmax(-cost * self.temperature(), dim=1)
+        return self.index(prob), prob
+
 
 # --------------------------------------------------------------------------
 # refinement ladder  -- defects HW-1 and ARCH-1
@@ -298,16 +313,53 @@ class HailoStereo(nn.Module):
     exported.
     """
 
-    def __init__(self, num_disp=NUM_DISP, groups=8, match_ch=32, cost="sub"):
+    def __init__(self, num_disp=NUM_DISP, groups=8, match_ch=32, cost="sub",
+                 feat_ch=32, n_res=6, agg_ch=64, refine="base"):
         super().__init__()
+        assert refine in ("base", "v2", "v3"), f"unknown refine {refine!r}"
         self.num_disp = num_disp
-        self.features = FeatureNet(match_ch=match_ch)
+        self.refine = refine
+        # Constructor arguments, saved in every checkpoint so evaluation and
+        # export rebuild the same graph (see build_model).
+        self.arch = dict(num_disp=num_disp, groups=groups, match_ch=match_ch,
+                         cost=cost, feat_ch=feat_ch, n_res=n_res, agg_ch=agg_ch,
+                         refine=refine)
+        self.features = FeatureNet(match_ch=match_ch, feat_ch=feat_ch, n_res=n_res)
         self.cost_volume = CostVolume(match_ch, num_disp, groups, cost=cost)
-        self.aggregation = Aggregation(self.cost_volume.out_channels, num_disp)
+        self.aggregation = Aggregation(self.cost_volume.out_channels, num_disp,
+                                       ch=agg_ch)
         self.soft_argmin = SoftArgmin(num_disp)
-        self.refine4 = RefineStage(guide_ch=24, hidden=32, dilations=(1, 2, 4))
-        self.refine2 = RefineStage(guide_ch=16, hidden=24, dilations=(1, 2))
-        self.refine1 = RefineStage(guide_ch=3, hidden=16, dilations=(1, 1))
+        if refine == "base":
+            self.refine4 = RefineStage(guide_ch=24, hidden=32, dilations=(1, 2, 4))
+            self.refine2 = RefineStage(guide_ch=16, hidden=24, dilations=(1, 2))
+            self.refine1 = RefineStage(guide_ch=3, hidden=16, dilations=(1, 1))
+        else:  # v2: refine4 also sees the 1/8 matching probability volume
+            # (upsampled x2 to 1/4), widened hidden/dilations; refine2 widened;
+            # refine1 unchanged. Only Conv/BN/LeakyReLU + interpolate + cat/add.
+            self.refine4 = RefineStage(guide_ch=48, hidden=48,
+                                       dilations=(1, 2, 4, 8, 1))
+            self.refine2 = RefineStage(guide_ch=16, hidden=32,
+                                       dilations=(1, 2, 4))
+            self.refine1 = RefineStage(guide_ch=3, hidden=16, dilations=(1, 1))
+        if refine == "v3":
+            # v3 = v2 plus a 1/4-resolution DIFFERENCE-ONLY cost volume.
+            # match4 is siamese (same weights for left and right) over the
+            # FeatureNet 1/4 output (24 ch); cost_volume4 holds 48 hypotheses
+            # x 4 px = 192 full-res px = MAX_DISP, pad-once/slice form via
+            # _shift_all; cost4_proj squeezes the 192-ch volume to 48 ch.
+            # refine4 guidance = cat(fl4 [24], prob_up [24], cost4_proj [48]).
+            # No element-wise tensor x tensor multiply anywhere in this path
+            # (sub-only cost), so the Hailo-8 compile constraint holds.
+            self.match4 = nn.Sequential(
+                ResBlock(24),
+                ResBlock(24),
+                nn.Conv2d(24, 16, 3, 1, 1, bias=False),
+            )
+            self.cost_volume4 = CostVolume(ch=16, num_disp=48, groups=4,
+                                           cost="sub")
+            self.cost4_proj = conv_bn_act(192, 48, 3)
+            self.refine4 = RefineStage(guide_ch=96, hidden=48,
+                                       dilations=(1, 2, 4, 8, 1))
 
     def forward(self, left, right):
         h, w = int(left.shape[-2]), int(left.shape[-1])
@@ -317,12 +369,25 @@ class HailoStereo(nn.Module):
                 "ladder and the aggregation hourglass upsample by a fixed "
                 "factor of 2, which is only exact when every scale divides."
             )
-        _, _, fr8 = self.features(right)
+        _, fr4, fr8 = self.features(right)
         fl2, fl4, fl8 = self.features(left)
 
         cost = self.aggregation(self.cost_volume(fl8, fr8))
-        d8 = self.soft_argmin(cost)          # 1/8-res pixels
-        d4 = self.refine4(d8, fl4)           # 1/4-res pixels
+        if self.arch.get("refine", "base") == "v3":
+            d8, prob = self.soft_argmin.forward_with_prob(cost)  # 1/8-res px + volume
+            prob_up = F.interpolate(prob, scale_factor=2.0, mode="bilinear",
+                                    align_corners=False)          # 1/4, 24ch
+            cv4 = self.cost4_proj(self.cost_volume4(self.match4(fl4),
+                                                    self.match4(fr4)))
+            d4 = self.refine4(d8, torch.cat([fl4, prob_up, cv4], dim=1))
+        elif self.arch.get("refine", "base") == "v2":
+            d8, prob = self.soft_argmin.forward_with_prob(cost)  # 1/8-res px + volume
+            prob_up = F.interpolate(prob, scale_factor=2.0, mode="bilinear",
+                                    align_corners=False)          # 1/4, 24ch
+            d4 = self.refine4(d8, torch.cat([fl4, prob_up], dim=1))
+        else:
+            d8 = self.soft_argmin(cost)          # 1/8-res pixels
+            d4 = self.refine4(d8, fl4)           # 1/4-res pixels
         d2 = self.refine2(d4, fl2)           # 1/2-res pixels
         d1 = self.refine1(d2, left)          # full-res pixels
 
@@ -350,13 +415,29 @@ class HailoStereo(nn.Module):
         bn.bias.data.mul_(-t)
         self.soft_argmin.log_temp.data.zero_()
         self.soft_argmin.forward = _fused_softargmin.__get__(self.soft_argmin)
+        self.soft_argmin.forward_with_prob = \
+            _fused_softargmin_with_prob.__get__(self.soft_argmin)
         return self
+
+
+def build_model(blob=None) -> HailoStereo:
+    """A HailoStereo shaped like the checkpoint `blob` (a loaded dict).
+    Checkpoints from before the architecture was configurable carry no "arch"
+    entry and get the original defaults."""
+    arch = blob.get("arch") if isinstance(blob, dict) else None
+    return HailoStereo(**(arch or {}))
 
 
 def _fused_softargmin(self, cost):
     """Post-fusion soft-argmin: the negation and temperature now live in the
     weights of the convolution that produced `cost`."""
     return self.index(F.softmax(cost, dim=1))
+
+
+def _fused_softargmin_with_prob(self, cost):
+    """Post-fusion soft-argmin with the probability volume exposed for v2."""
+    prob = F.softmax(cost, dim=1)
+    return self.index(prob), prob
 
 
 # --------------------------------------------------------------------------

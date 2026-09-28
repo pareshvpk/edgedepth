@@ -1,0 +1,2546 @@
+held out ['35mm_focallength/scene_forwards/slow']: 800 frames (200 sampled for validation), 3600 left to train on
+arch {'num_disp': 24, 'groups': 8, 'match_ch': 32, 'cost': 'both', 'feat_ch': 32, 'n_res': 6, 'agg_ch': 64} | 0.91M params
+device cuda | train 3600 | val 200 | crop 256x512 | batch 8
+/home/paresh/.local/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/paresh/.local/lib/python3.10/site-packages/torch/autograd/graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/home/paresh/.local/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:143: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+  epoch   0 step     0/450 loss 154.7610 lr 2.00e-05
+  epoch   0 step    50/450 loss 155.0392 lr 2.17e-05
+  epoch   0 step   100/450 loss 135.9386 lr 2.66e-05
+  epoch   0 step   150/450 loss 122.7432 lr 3.47e-05
+  epoch   0 step   200/450 loss 113.7723 lr 4.58e-05
+  epoch   0 step   250/450 loss 107.4997 lr 5.98e-05
+  epoch   0 step   300/450 loss 101.5185 lr 7.66e-05
+  epoch   0 step   350/450 loss 96.2550 lr 9.58e-05
+  epoch   0 step   400/450 loss 92.0269 lr 1.17e-04
+epoch   0 | loss 87.9748 | val EPE 51.687 px | D1 96.13% | 43s (ema)
+  new best EPE 51.687 px -> runs/sf_both/best.pt
+  epoch   1 step     0/450 loss 56.0678 lr 1.41e-04
+  epoch   1 step    50/450 loss 57.8162 lr 1.66e-04
+  epoch   1 step   100/450 loss 56.4026 lr 1.92e-04
+  epoch   1 step   150/450 loss 54.3418 lr 2.19e-04
+  epoch   1 step   200/450 loss 53.4193 lr 2.47e-04
+  epoch   1 step   250/450 loss 51.7124 lr 2.75e-04
+  epoch   1 step   300/450 loss 50.0479 lr 3.03e-04
+  epoch   1 step   350/450 loss 48.6354 lr 3.30e-04
+  epoch   1 step   400/450 loss 47.3938 lr 3.56e-04
+epoch   1 | loss 46.2822 | val EPE 52.278 px | D1 96.00% | 43s (ema)
+  epoch   2 step     0/450 loss 39.7141 lr 3.81e-04
+  epoch   2 step    50/450 loss 31.7539 lr 4.04e-04
+  epoch   2 step   100/450 loss 31.7940 lr 4.25e-04
+  epoch   2 step   150/450 loss 31.0783 lr 4.44e-04
+  epoch   2 step   200/450 loss 30.5050 lr 4.61e-04
+  epoch   2 step   250/450 loss 29.7014 lr 4.75e-04
+  epoch   2 step   300/450 loss 29.3012 lr 4.86e-04
+  epoch   2 step   350/450 loss 28.3799 lr 4.94e-04
+  epoch   2 step   400/450 loss 27.5499 lr 4.99e-04
+epoch   2 | loss 27.1009 | val EPE 54.862 px | D1 95.77% | 43s (ema)
+  epoch   3 step     0/450 loss 16.2526 lr 5.00e-04
+  epoch   3 step    50/450 loss 20.7194 lr 5.00e-04
+  epoch   3 step   100/450 loss 21.3410 lr 5.00e-04
+  epoch   3 step   150/450 loss 21.0367 lr 5.00e-04
+  epoch   3 step   200/450 loss 20.8156 lr 5.00e-04
+  epoch   3 step   250/450 loss 20.4421 lr 4.99e-04
+  epoch   3 step   300/450 loss 20.0875 lr 4.99e-04
+  epoch   3 step   350/450 loss 20.0162 lr 4.99e-04
+  epoch   3 step   400/450 loss 19.9478 lr 4.99e-04
+epoch   3 | loss 19.6495 | val EPE 48.835 px | D1 92.69% | 43s (ema)
+  new best EPE 48.835 px -> runs/sf_both/best.pt
+  epoch   4 step     0/450 loss 10.7124 lr 4.98e-04
+  epoch   4 step    50/450 loss 17.4740 lr 4.98e-04
+  epoch   4 step   100/450 loss 16.2885 lr 4.97e-04
+  epoch   4 step   150/450 loss 16.3057 lr 4.97e-04
+  epoch   4 step   200/450 loss 16.0856 lr 4.96e-04
+=== resumed after thermal stop Monday 21 September 2026 09:00:29 PM IST ===
+held out ['35mm_focallength/scene_forwards/slow']: 800 frames (200 sampled for validation), 3600 left to train on
+arch {'num_disp': 24, 'groups': 8, 'match_ch': 32, 'cost': 'both', 'feat_ch': 32, 'n_res': 6, 'agg_ch': 64} | 0.91M params
+resumed from runs/sf_both/last.pt at epoch 4 (best EPE 48.835 px)
+device cuda | train 3600 | val 200 | crop 256x512 | batch 8
+/home/paresh/.local/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/paresh/.local/lib/python3.10/site-packages/torch/autograd/graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+  epoch   4 step     0/450 loss 14.6787 lr 4.98e-04
+  epoch   4 step    50/450 loss 16.1031 lr 4.98e-04
+  epoch   4 step   100/450 loss 16.4315 lr 4.97e-04
+  epoch   4 step   150/450 loss 16.5961 lr 4.97e-04
+  epoch   4 step   200/450 loss 16.5324 lr 4.96e-04
+  epoch   4 step   250/450 loss 16.4101 lr 4.96e-04
+  epoch   4 step   300/450 loss 16.0838 lr 4.95e-04
+  epoch   4 step   350/450 loss 16.2203 lr 4.95e-04
+  epoch   4 step   400/450 loss 16.0528 lr 4.94e-04
+epoch   4 | loss 15.9211 | val EPE 16.907 px | D1 75.11% | 44s (ema)
+  new best EPE 16.907 px -> runs/sf_both/best.pt
+  epoch   5 step     0/450 loss 16.4357 lr 4.93e-04
+  epoch   5 step    50/450 loss 14.8939 lr 4.92e-04
+  epoch   5 step   100/450 loss 14.3507 lr 4.92e-04
+  epoch   5 step   150/450 loss 13.9739 lr 4.91e-04
+  epoch   5 step   200/450 loss 14.0868 lr 4.90e-04
+  epoch   5 step   250/450 loss 13.8967 lr 4.89e-04
+  epoch   5 step   300/450 loss 13.8671 lr 4.88e-04
+  epoch   5 step   350/450 loss 13.9990 lr 4.87e-04
+  epoch   5 step   400/450 loss 13.8856 lr 4.86e-04
+epoch   5 | loss 13.6994 | val EPE 8.187 px | D1 52.60% | 43s (ema)
+  new best EPE 8.187 px -> runs/sf_both/best.pt
+  epoch   6 step     0/450 loss 22.9800 lr 4.85e-04
+  epoch   6 step    50/450 loss 12.8048 lr 4.84e-04
+  epoch   6 step   100/450 loss 13.2362 lr 4.83e-04
+  epoch   6 step   150/450 loss 12.9348 lr 4.81e-04
+  epoch   6 step   200/450 loss 12.7071 lr 4.80e-04
+  epoch   6 step   250/450 loss 12.6071 lr 4.79e-04
+  epoch   6 step   300/450 loss 12.6220 lr 4.78e-04
+  epoch   6 step   350/450 loss 12.6288 lr 4.76e-04
+  epoch   6 step   400/450 loss 12.5026 lr 4.75e-04
+epoch   6 | loss 12.3765 | val EPE 6.460 px | D1 41.77% | 943s (ema)
+  new best EPE 6.460 px -> runs/sf_both/best.pt
+  epoch   7 step     0/450 loss 21.8416 lr 4.73e-04
+  epoch   7 step    50/450 loss 12.6206 lr 4.72e-04
+  epoch   7 step   100/450 loss 12.2748 lr 4.70e-04
+  epoch   7 step   150/450 loss 11.9835 lr 4.69e-04
+  epoch   7 step   200/450 loss 11.6436 lr 4.67e-04
+  epoch   7 step   250/450 loss 11.5741 lr 4.66e-04
+  epoch   7 step   300/450 loss 11.4647 lr 4.64e-04
+  epoch   7 step   350/450 loss 11.4851 lr 4.62e-04
+  epoch   7 step   400/450 loss 11.4746 lr 4.61e-04
+epoch   7 | loss 11.4065 | val EPE 5.552 px | D1 34.44% | 43s (ema)
+  new best EPE 5.552 px -> runs/sf_both/best.pt
+  epoch   8 step     0/450 loss 15.8933 lr 4.59e-04
+  epoch   8 step    50/450 loss 10.4913 lr 4.57e-04
+  epoch   8 step   100/450 loss 10.9298 lr 4.55e-04
+  epoch   8 step   150/450 loss 10.8730 lr 4.53e-04
+  epoch   8 step   200/450 loss 11.0219 lr 4.51e-04
+  epoch   8 step   250/450 loss 10.9176 lr 4.49e-04
+  epoch   8 step   300/450 loss 10.8195 lr 4.48e-04
+  epoch   8 step   350/450 loss 10.7955 lr 4.46e-04
+  epoch   8 step   400/450 loss 10.7336 lr 4.43e-04
+epoch   8 | loss 10.7177 | val EPE 4.966 px | D1 29.87% | 43s (ema)
+  new best EPE 4.966 px -> runs/sf_both/best.pt
+  epoch   9 step     0/450 loss 19.1162 lr 4.41e-04
+  epoch   9 step    50/450 loss 10.8275 lr 4.39e-04
+  epoch   9 step   100/450 loss 10.8326 lr 4.37e-04
+  epoch   9 step   150/450 loss 10.5809 lr 4.35e-04
+  epoch   9 step   200/450 loss 10.2324 lr 4.33e-04
+  epoch   9 step   250/450 loss 10.3061 lr 4.31e-04
+  epoch   9 step   300/450 loss 10.3197 lr 4.28e-04
+  epoch   9 step   350/450 loss 10.2451 lr 4.26e-04
+  epoch   9 step   400/450 loss 10.3666 lr 4.24e-04
+=== resumed with --step-pause 0.1 Monday 21 September 2026 09:40:53 PM IST ===
+held out ['35mm_focallength/scene_forwards/slow']: 800 frames (200 sampled for validation), 3600 left to train on
+arch {'num_disp': 24, 'groups': 8, 'match_ch': 32, 'cost': 'both', 'feat_ch': 32, 'n_res': 6, 'agg_ch': 64} | 0.91M params
+resumed from runs/sf_both/last.pt at epoch 9 (best EPE 4.966 px)
+device cuda | train 3600 | val 200 | crop 256x512 | batch 8
+/home/paresh/.local/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/paresh/.local/lib/python3.10/site-packages/torch/autograd/graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+  epoch   9 step     0/450 loss 11.2948 lr 4.41e-04
+  epoch   9 step    50/450 loss 10.0377 lr 4.39e-04
+  epoch   9 step   100/450 loss 9.7263 lr 4.37e-04
+  epoch   9 step   150/450 loss 9.8125 lr 4.35e-04
+  epoch   9 step   200/450 loss 9.9189 lr 4.33e-04
+  epoch   9 step   250/450 loss 9.8895 lr 4.31e-04
+  epoch   9 step   300/450 loss 9.7691 lr 4.28e-04
+  epoch   9 step   350/450 loss 9.8205 lr 4.26e-04
+held out ['35mm_focallength/scene_forwards/slow']: 800 frames (200 sampled for validation), 3600 left to train on
+arch {'num_disp': 24, 'groups': 8, 'match_ch': 32, 'cost': 'both', 'feat_ch': 32, 'n_res': 6, 'agg_ch': 64} | 0.91M params
+resumed from runs/sf_both/last.pt at epoch 9 (best EPE 4.966 px)
+device cuda | train 3600 | val 200 | crop 256x512 | batch 8
+/home/paresh/.local/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/paresh/.local/lib/python3.10/site-packages/torch/autograd/graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+  epoch   9 step     0/450 loss 7.1617 lr 4.41e-04
+  epoch   9 step    50/450 loss 9.4558 lr 4.39e-04
+  epoch   9 step   100/450 loss 9.9019 lr 4.37e-04
+  epoch   9 step   150/450 loss 9.8789 lr 4.35e-04
+  epoch   9 step   200/450 loss 9.9297 lr 4.33e-04
+  epoch   9 step   250/450 loss 9.9476 lr 4.31e-04
+  epoch   9 step   300/450 loss 9.9128 lr 4.28e-04
+  epoch   9 step   350/450 loss 9.8849 lr 4.26e-04
+  epoch   9 step   400/450 loss 9.9281 lr 4.24e-04
+epoch   9 | loss 9.8381 | val EPE 4.579 px | D1 27.19% | 91s (ema)
+  new best EPE 4.579 px -> runs/sf_both/best.pt
+  epoch  10 step     0/450 loss 8.3737 lr 4.21e-04
+  epoch  10 step    50/450 loss 10.1390 lr 4.19e-04
+  epoch  10 step   100/450 loss 10.0070 lr 4.17e-04
+  epoch  10 step   150/450 loss 9.8777 lr 4.14e-04
+  epoch  10 step   200/450 loss 10.0563 lr 4.12e-04
+  epoch  10 step   250/450 loss 10.0979 lr 4.09e-04
+  epoch  10 step   300/450 loss 9.8948 lr 4.07e-04
+  epoch  10 step   350/450 loss 9.8248 lr 4.04e-04
+  epoch  10 step   400/450 loss 9.6791 lr 4.02e-04
+epoch  10 | loss 9.6162 | val EPE 4.329 px | D1 25.47% | 89s (ema)
+  new best EPE 4.329 px -> runs/sf_both/best.pt
+  epoch  11 step     0/450 loss 6.9578 lr 3.99e-04
+  epoch  11 step    50/450 loss 9.2031 lr 3.97e-04
+  epoch  11 step   100/450 loss 9.4676 lr 3.94e-04
+  epoch  11 step   150/450 loss 9.6283 lr 3.91e-04
+  epoch  11 step   200/450 loss 9.4989 lr 3.89e-04
+  epoch  11 step   250/450 loss 9.3597 lr 3.86e-04
+  epoch  11 step   300/450 loss 9.3155 lr 3.83e-04
+  epoch  11 step   350/450 loss 9.3473 lr 3.80e-04
+  epoch  11 step   400/450 loss 9.3035 lr 3.78e-04
+epoch  11 | loss 9.1414 | val EPE 4.125 px | D1 24.25% | 90s (ema)
+  new best EPE 4.125 px -> runs/sf_both/best.pt
+  epoch  12 step     0/450 loss 5.0939 lr 3.75e-04
+  epoch  12 step    50/450 loss 8.4302 lr 3.72e-04
+  epoch  12 step   100/450 loss 8.8090 lr 3.69e-04
+  epoch  12 step   150/450 loss 8.7952 lr 3.66e-04
+  epoch  12 step   200/450 loss 8.7338 lr 3.64e-04
+  epoch  12 step   250/450 loss 8.6655 lr 3.61e-04
+  epoch  12 step   300/450 loss 8.6985 lr 3.58e-04
+  epoch  12 step   350/450 loss 8.6378 lr 3.55e-04
+held out ['35mm_focallength/scene_forwards/slow']: 800 frames (200 sampled for validation), 3600 left to train on
+arch {'num_disp': 24, 'groups': 8, 'match_ch': 32, 'cost': 'both', 'feat_ch': 32, 'n_res': 6, 'agg_ch': 64} | 0.91M params
+resumed from runs/sf_both/last.pt at epoch 12 (best EPE 4.125 px)
+device cuda | train 3600 | val 200 | crop 256x512 | batch 8
+/home/paresh/.local/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/paresh/.local/lib/python3.10/site-packages/torch/autograd/graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+  epoch  12 step     0/450 loss 10.0108 lr 3.75e-04
+  epoch  12 step    50/450 loss 8.9928 lr 3.72e-04
+  epoch  12 step   100/450 loss 9.2333 lr 3.69e-04
+  epoch  12 step   150/450 loss 8.9443 lr 3.66e-04
+  epoch  12 step   200/450 loss 8.7326 lr 3.64e-04
+  epoch  12 step   250/450 loss 8.7390 lr 3.61e-04
+  epoch  12 step   300/450 loss 8.9088 lr 3.58e-04
+  epoch  12 step   350/450 loss 8.7988 lr 3.55e-04
+  epoch  12 step   400/450 loss 8.7693 lr 3.52e-04
+epoch  12 | loss 8.7021 | val EPE 3.957 px | D1 23.19% | 137s (ema)
+  new best EPE 3.957 px -> runs/sf_both/best.pt
+  epoch  13 step     0/450 loss 6.9593 lr 3.49e-04
+  epoch  13 step    50/450 loss 8.2553 lr 3.46e-04
+  epoch  13 step   100/450 loss 8.3011 lr 3.43e-04
+  epoch  13 step   150/450 loss 8.1810 lr 3.40e-04
+  epoch  13 step   200/450 loss 8.3075 lr 3.37e-04
+  epoch  13 step   250/450 loss 8.3637 lr 3.34e-04
+  epoch  13 step   300/450 loss 8.4675 lr 3.31e-04
+  epoch  13 step   350/450 loss 8.4127 lr 3.28e-04
+  epoch  13 step   400/450 loss 8.4738 lr 3.25e-04
+held out ['35mm_focallength/scene_forwards/slow']: 800 frames (200 sampled for validation), 3600 left to train on
+arch {'num_disp': 24, 'groups': 8, 'match_ch': 32, 'cost': 'both', 'feat_ch': 32, 'n_res': 6, 'agg_ch': 64} | 0.91M params
+resumed from runs/sf_both/last.pt at epoch 13 (best EPE 3.957 px)
+device cuda | train 3600 | val 200 | crop 256x512 | batch 8
+/home/paresh/.local/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/paresh/.local/lib/python3.10/site-packages/torch/autograd/graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+  epoch  13 step     0/450 loss 9.6544 lr 3.49e-04
+  epoch  13 step    50/450 loss 9.3033 lr 3.46e-04
+  epoch  13 step   100/450 loss 9.0465 lr 3.43e-04
+  epoch  13 step   150/450 loss 8.7971 lr 3.40e-04
+  epoch  13 step   200/450 loss 8.7248 lr 3.37e-04
+  epoch  13 step   250/450 loss 8.5649 lr 3.34e-04
+  epoch  13 step   300/450 loss 8.5810 lr 3.31e-04
+  epoch  13 step   350/450 loss 8.4669 lr 3.28e-04
+  epoch  13 step   400/450 loss 8.5461 lr 3.25e-04
+held out ['35mm_focallength/scene_forwards/slow']: 800 frames (200 sampled for validation), 3600 left to train on
+arch {'num_disp': 24, 'groups': 8, 'match_ch': 32, 'cost': 'both', 'feat_ch': 32, 'n_res': 6, 'agg_ch': 64} | 0.91M params
+resumed from runs/sf_both/last.pt at epoch 13 (best EPE 3.957 px)
+device cuda | train 3600 | val 200 | crop 256x512 | batch 8
+/home/paresh/.local/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/paresh/.local/lib/python3.10/site-packages/torch/autograd/graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+  epoch  13 step     0/450 loss 5.2198 lr 3.49e-04
+  epoch  13 step    50/450 loss 8.0949 lr 3.46e-04
+  epoch  13 step   100/450 loss 8.4299 lr 3.43e-04
+  [thermal] held 5s, GPU now 62C
+  epoch  13 step   150/450 loss 8.1985 lr 3.40e-04
+  [thermal] held 5s, GPU now 63C
+  [thermal] held 5s, GPU now 63C
+  epoch  13 step   200/450 loss 8.2389 lr 3.37e-04
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  epoch  13 step   250/450 loss 8.2449 lr 3.34e-04
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  epoch  13 step   300/450 loss 8.3222 lr 3.31e-04
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 64C
+  epoch  13 step   350/450 loss 8.3343 lr 3.28e-04
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  epoch  13 step   400/450 loss 8.3585 lr 3.25e-04
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+epoch  13 | loss 8.4460 | val EPE 3.813 px | D1 22.32% | 291s (ema)
+  new best EPE 3.813 px -> runs/sf_both/best.pt
+  epoch  14 step     0/450 loss 5.4948 lr 3.22e-04
+  [thermal] held 5s, GPU now 64C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  epoch  14 step    50/450 loss 8.3292 lr 3.18e-04
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  epoch  14 step   100/450 loss 8.2941 lr 3.15e-04
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  epoch  14 step   150/450 loss 8.2294 lr 3.12e-04
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  epoch  14 step   200/450 loss 8.1428 lr 3.09e-04
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  epoch  14 step   250/450 loss 8.1079 lr 3.06e-04
+  [thermal] held 10s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 10s, GPU now 65C
+  epoch  14 step   300/450 loss 8.1293 lr 3.03e-04
+  [thermal] held 10s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 10s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  epoch  14 step   350/450 loss 8.0731 lr 3.00e-04
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 10s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  epoch  14 step   400/450 loss 8.0551 lr 2.96e-04
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 10s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 10s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 10s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+epoch  14 | loss 8.0620 | val EPE 3.700 px | D1 21.64% | 550s (ema)
+  new best EPE 3.700 px -> runs/sf_both/best.pt
+  epoch  15 step     0/450 loss 10.0905 lr 2.93e-04
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+  [thermal] held 5s, GPU now 65C
+held out ['35mm_focallength/scene_forwards/slow']: 800 frames (200 sampled for validation), 3600 left to train on
+arch {'num_disp': 24, 'groups': 8, 'match_ch': 32, 'cost': 'both', 'feat_ch': 32, 'n_res': 6, 'agg_ch': 64} | 0.91M params
+resumed from runs/sf_both/last.pt at epoch 15 (best EPE 3.700 px)
+device cuda | train 3600 | val 200 | crop 256x512 | batch 8
+/home/paresh/.local/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/paresh/.local/lib/python3.10/site-packages/torch/autograd/graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+  epoch  15 step     0/450 loss 6.8783 lr 2.93e-04
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  15 step    50/450 loss 7.5852 lr 2.90e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  15 step   100/450 loss 8.0418 lr 2.87e-04
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  15 step   150/450 loss 7.9454 lr 2.84e-04
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  15 step   200/450 loss 7.8837 lr 2.81e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  15 step   250/450 loss 7.7775 lr 2.77e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  15 step   300/450 loss 7.8191 lr 2.74e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  15 step   350/450 loss 7.8120 lr 2.71e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  15 step   400/450 loss 7.7449 lr 2.68e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+epoch  15 | loss 7.7619 | val EPE 3.604 px | D1 21.02% | 335s (ema)
+  new best EPE 3.604 px -> runs/sf_both/best.pt
+  epoch  16 step     0/450 loss 4.1527 lr 2.64e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  epoch  16 step    50/450 loss 8.0216 lr 2.61e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 66C
+  [thermal] held 4s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  16 step   100/450 loss 7.6753 lr 2.58e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+held out ['35mm_focallength/scene_forwards/slow']: 800 frames (200 sampled for validation), 3600 left to train on
+arch {'num_disp': 24, 'groups': 8, 'match_ch': 32, 'cost': 'both', 'feat_ch': 32, 'n_res': 6, 'agg_ch': 64} | 0.91M params
+resumed from runs/sf_both/last.pt at epoch 16 (best EPE 3.604 px)
+device cuda | train 3600 | val 200 | crop 256x512 | batch 8
+/home/paresh/.local/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/paresh/.local/lib/python3.10/site-packages/torch/autograd/graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+  epoch  16 step     0/450 loss 10.2347 lr 2.64e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  16 step    50/450 loss 7.9494 lr 2.61e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  16 step   100/450 loss 7.9419 lr 2.58e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  16 step   150/450 loss 8.0531 lr 2.55e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  16 step   200/450 loss 7.7590 lr 2.51e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  epoch  16 step   250/450 loss 7.6212 lr 2.48e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  16 step   300/450 loss 7.4970 lr 2.45e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  16 step   350/450 loss 7.5233 lr 2.42e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  16 step   400/450 loss 7.5295 lr 2.39e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+epoch  16 | loss 7.5568 | val EPE 3.536 px | D1 20.55% | 427s (ema)
+  new best EPE 3.536 px -> runs/sf_both/best.pt
+  epoch  17 step     0/450 loss 8.1885 lr 2.35e-04
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  17 step    50/450 loss 7.3838 lr 2.32e-04
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  17 step   100/450 loss 7.3552 lr 2.29e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  17 step   150/450 loss 7.3353 lr 2.26e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  17 step   200/450 loss 7.4222 lr 2.22e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  17 step   250/450 loss 7.3343 lr 2.19e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 6s, GPU now 67C
+  [thermal] held 6s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  17 step   300/450 loss 7.3390 lr 2.16e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  17 step   350/450 loss 7.3515 lr 2.13e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  17 step   400/450 loss 7.3499 lr 2.10e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+epoch  17 | loss 7.3876 | val EPE 3.465 px | D1 20.14% | 425s (ema)
+  new best EPE 3.465 px -> runs/sf_both/best.pt
+  epoch  18 step     0/450 loss 7.8486 lr 2.06e-04
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  18 step    50/450 loss 7.6552 lr 2.03e-04
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  18 step   100/450 loss 7.6860 lr 2.00e-04
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  18 step   150/450 loss 7.4647 lr 1.97e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  18 step   200/450 loss 7.2270 lr 1.94e-04
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  18 step   250/450 loss 7.2587 lr 1.91e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  18 step   300/450 loss 7.2556 lr 1.88e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  18 step   350/450 loss 7.2493 lr 1.84e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  18 step   400/450 loss 7.1740 lr 1.81e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+epoch  18 | loss 7.1215 | val EPE 3.404 px | D1 19.77% | 390s (ema)
+  new best EPE 3.404 px -> runs/sf_both/best.pt
+  epoch  19 step     0/450 loss 6.3920 lr 1.78e-04
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  19 step    50/450 loss 7.3278 lr 1.75e-04
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  epoch  19 step   100/450 loss 7.1448 lr 1.72e-04
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  19 step   150/450 loss 7.0964 lr 1.69e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  19 step   200/450 loss 7.0422 lr 1.66e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  19 step   250/450 loss 7.0165 lr 1.63e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  19 step   300/450 loss 7.1512 lr 1.60e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  19 step   350/450 loss 7.1015 lr 1.57e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  19 step   400/450 loss 7.0709 lr 1.54e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+epoch  19 | loss 7.0974 | val EPE 3.353 px | D1 19.48% | 384s (ema)
+  new best EPE 3.353 px -> runs/sf_both/best.pt
+  epoch  20 step     0/450 loss 7.1719 lr 1.51e-04
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  20 step    50/450 loss 6.5858 lr 1.48e-04
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  20 step   100/450 loss 7.1076 lr 1.45e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  20 step   150/450 loss 7.1040 lr 1.42e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  20 step   200/450 loss 6.9621 lr 1.39e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  20 step   250/450 loss 7.0513 lr 1.36e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  20 step   300/450 loss 7.0420 lr 1.33e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  20 step   350/450 loss 7.0651 lr 1.31e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  20 step   400/450 loss 7.0306 lr 1.28e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+epoch  20 | loss 6.9721 | val EPE 3.304 px | D1 19.18% | 398s (ema)
+  new best EPE 3.304 px -> runs/sf_both/best.pt
+  epoch  21 step     0/450 loss 3.1605 lr 1.25e-04
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  21 step    50/450 loss 6.7704 lr 1.22e-04
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  21 step   100/450 loss 6.7690 lr 1.19e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  21 step   150/450 loss 6.8564 lr 1.17e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  21 step   200/450 loss 6.8200 lr 1.14e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  21 step   250/450 loss 6.8916 lr 1.11e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  21 step   300/450 loss 6.8018 lr 1.08e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  21 step   350/450 loss 6.8334 lr 1.06e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  21 step   400/450 loss 6.7648 lr 1.03e-04
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 8s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+epoch  21 | loss 6.7846 | val EPE 3.261 px | D1 18.92% | 426s (ema)
+  new best EPE 3.261 px -> runs/sf_both/best.pt
+  epoch  22 step     0/450 loss 6.0192 lr 1.01e-04
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  22 step    50/450 loss 6.6460 lr 9.80e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  22 step   100/450 loss 6.9786 lr 9.55e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 10s, GPU now 67C
+  [thermal] held 6s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  22 step   150/450 loss 6.8595 lr 9.29e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  22 step   200/450 loss 6.8243 lr 9.04e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  22 step   250/450 loss 6.6506 lr 8.80e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  22 step   300/450 loss 6.6936 lr 8.55e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  22 step   350/450 loss 6.6628 lr 8.31e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  22 step   400/450 loss 6.6374 lr 8.07e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+epoch  22 | loss 6.6578 | val EPE 3.223 px | D1 18.72% | 398s (ema)
+  new best EPE 3.223 px -> runs/sf_both/best.pt
+  epoch  23 step     0/450 loss 7.6634 lr 7.83e-05
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  23 step    50/450 loss 6.6969 lr 7.60e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  epoch  23 step   100/450 loss 6.5609 lr 7.37e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  23 step   150/450 loss 6.5492 lr 7.14e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  23 step   200/450 loss 6.5494 lr 6.92e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  23 step   250/450 loss 6.6016 lr 6.70e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  23 step   300/450 loss 6.5490 lr 6.48e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  23 step   350/450 loss 6.6042 lr 6.26e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  epoch  23 step   400/450 loss 6.6392 lr 6.05e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+epoch  23 | loss 6.6189 | val EPE 3.194 px | D1 18.56% | 371s (ema)
+  new best EPE 3.194 px -> runs/sf_both/best.pt
+  epoch  24 step     0/450 loss 3.6308 lr 5.84e-05
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 66C
+  epoch  24 step    50/450 loss 6.3431 lr 5.63e-05
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  24 step   100/450 loss 6.5884 lr 5.43e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  24 step   150/450 loss 6.7197 lr 5.23e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  epoch  24 step   200/450 loss 6.5666 lr 5.04e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  epoch  24 step   250/450 loss 6.4465 lr 4.84e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  24 step   300/450 loss 6.6017 lr 4.65e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  24 step   350/450 loss 6.5550 lr 4.47e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  24 step   400/450 loss 6.5219 lr 4.29e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+epoch  24 | loss 6.4747 | val EPE 3.167 px | D1 18.40% | 303s (ema)
+  new best EPE 3.167 px -> runs/sf_both/best.pt
+  epoch  25 step     0/450 loss 9.5413 lr 4.11e-05
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  epoch  25 step    50/450 loss 6.7665 lr 3.93e-05
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  25 step   100/450 loss 6.9847 lr 3.76e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  25 step   150/450 loss 6.7383 lr 3.59e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  25 step   200/450 loss 6.6487 lr 3.42e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  epoch  25 step   250/450 loss 6.5012 lr 3.26e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  25 step   300/450 loss 6.4888 lr 3.10e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  epoch  25 step   350/450 loss 6.4310 lr 2.95e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  epoch  25 step   400/450 loss 6.4421 lr 2.80e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+epoch  25 | loss 6.4442 | val EPE 3.148 px | D1 18.28% | 307s (ema)
+  new best EPE 3.148 px -> runs/sf_both/best.pt
+  epoch  26 step     0/450 loss 6.8412 lr 2.65e-05
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  26 step    50/450 loss 6.8517 lr 2.51e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  26 step   100/450 loss 6.5503 lr 2.37e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  26 step   150/450 loss 6.5089 lr 2.24e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  26 step   200/450 loss 6.2950 lr 2.10e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  26 step   250/450 loss 6.3038 lr 1.98e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  26 step   300/450 loss 6.3969 lr 1.85e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  26 step   350/450 loss 6.3543 lr 1.73e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  26 step   400/450 loss 6.4074 lr 1.62e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+epoch  26 | loss 6.4408 | val EPE 3.134 px | D1 18.19% | 324s (ema)
+  new best EPE 3.134 px -> runs/sf_both/best.pt
+  epoch  27 step     0/450 loss 3.5642 lr 1.50e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  epoch  27 step    50/450 loss 6.0326 lr 1.40e-05
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  27 step   100/450 loss 6.4049 lr 1.29e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  27 step   150/450 loss 6.4061 lr 1.19e-05
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  27 step   200/450 loss 6.4216 lr 1.09e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  27 step   250/450 loss 6.4773 lr 1.00e-05
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  27 step   300/450 loss 6.5286 lr 9.12e-06
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  27 step   350/450 loss 6.4803 lr 8.28e-06
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  epoch  27 step   400/450 loss 6.4811 lr 7.48e-06
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+epoch  27 | loss 6.4272 | val EPE 3.125 px | D1 18.14% | 322s (ema)
+  new best EPE 3.125 px -> runs/sf_both/best.pt
+  epoch  28 step     0/450 loss 9.3927 lr 6.71e-06
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 66C
+  epoch  28 step    50/450 loss 6.7896 lr 5.99e-06
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  epoch  28 step   100/450 loss 6.4476 lr 5.30e-06
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 66C
+  epoch  28 step   150/450 loss 6.4162 lr 4.66e-06
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  28 step   200/450 loss 6.3259 lr 4.06e-06
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  28 step   250/450 loss 6.3750 lr 3.50e-06
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  28 step   300/450 loss 6.2794 lr 2.98e-06
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  28 step   350/450 loss 6.2745 lr 2.51e-06
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  epoch  28 step   400/450 loss 6.2814 lr 2.07e-06
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+epoch  28 | loss 6.2921 | val EPE 3.120 px | D1 18.11% | 406s (ema)
+  new best EPE 3.120 px -> runs/sf_both/best.pt
+  epoch  29 step     0/450 loss 6.5578 lr 1.68e-06
+  [thermal] held 2s, GPU now 65C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 66C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  29 step    50/450 loss 5.9522 lr 1.32e-06
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  29 step   100/450 loss 6.3605 lr 1.01e-06
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  29 step   150/450 loss 6.3327 lr 7.44e-07
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  29 step   200/450 loss 6.3761 lr 5.16e-07
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  29 step   250/450 loss 6.4521 lr 3.30e-07
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  29 step   300/450 loss 6.5133 lr 1.85e-07
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  29 step   350/450 loss 6.4653 lr 8.23e-08
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  epoch  29 step   400/450 loss 6.3991 lr 2.13e-08
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 4s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+  [thermal] held 2s, GPU now 67C
+epoch  29 | loss 6.4291 | val EPE 3.115 px | D1 18.08% | 422s (ema)
+  new best EPE 3.115 px -> runs/sf_both/best.pt
+
+done. best val EPE 3.115 px
+reference: Hailo stereonet reports 8.223 float / 10.3 quantized on KITTI

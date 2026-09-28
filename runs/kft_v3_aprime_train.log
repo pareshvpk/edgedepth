@@ -1,0 +1,458 @@
+[kft_v3_aprime] start Thursday 24 September 2026 02:12:26 PM IST
+kitti_mixed: 160 KITTI 2015 + 194 KITTI 2012 = 354 training frames (val stays the KITTI 2015 40)
+arch {'num_disp': 24, 'groups': 8, 'match_ch': 32, 'cost': 'both', 'feat_ch': 32, 'n_res': 6, 'agg_ch': 64, 'refine': 'v3'} | 1.24M params
+initialised strictly from runs/sf_v3head/last.pt
+device cuda | train 354 | val 40 | crop 320x768 | batch 4
+epoch   0 | frozen=False | trainable 1239892/1239916
+/home/paresh/.local/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/paresh/.local/lib/python3.10/site-packages/torch/autograd/graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/home/paresh/.local/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:143: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+  epoch   0 step     0/88 loss 12.1366 lr 2.00e-06
+  epoch   0 step    50/88 loss 8.3353 lr 3.10e-06
+epoch   0 | loss 7.9341 | val EPE 2.140 px | D1 16.39% | 31s (ema)
+  new best EPE 2.140 px -> runs/kft_v3_aprime/best.pt
+epoch   1 | frozen=False | trainable 1239892/1239916
+  epoch   1 step     0/88 loss 3.7256 lr 5.30e-06
+  epoch   1 step    50/88 loss 4.8619 lr 9.78e-06
+  [thermal] held 2s, GPU now 63C
+epoch   1 | loss 4.0396 | val EPE 2.078 px | D1 15.56% | 30s (ema)
+  new best EPE 2.078 px -> runs/kft_v3_aprime/best.pt
+epoch   2 | frozen=False | trainable 1239892/1239916
+  epoch   2 step     0/88 loss 3.5770 lr 1.42e-05
+  epoch   2 step    50/88 loss 2.4591 lr 2.08e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch   2 | loss 2.4213 | val EPE 1.939 px | D1 13.76% | 30s (ema)
+  new best EPE 1.939 px -> runs/kft_v3_aprime/best.pt
+epoch   3 | frozen=False | trainable 1239892/1239916
+  epoch   3 step     0/88 loss 2.0730 lr 2.62e-05
+  epoch   3 step    50/88 loss 2.0737 lr 3.33e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch   3 | loss 2.0574 | val EPE 1.779 px | D1 11.78% | 33s (ema)
+  new best EPE 1.779 px -> runs/kft_v3_aprime/best.pt
+epoch   4 | frozen=False | trainable 1239892/1239916
+  epoch   4 step     0/88 loss 1.6985 lr 3.82e-05
+  epoch   4 step    50/88 loss 2.2094 lr 4.37e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch   4 | loss 2.2021 | val EPE 1.636 px | D1 10.17% | 30s (ema)
+  new best EPE 1.636 px -> runs/kft_v3_aprime/best.pt
+epoch   5 | frozen=False | trainable 1239892/1239916
+  epoch   5 step     0/88 loss 1.9421 lr 4.69e-05
+  epoch   5 step    50/88 loss 1.9999 lr 4.94e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch   5 | loss 2.0279 | val EPE 1.513 px | D1 8.95% | 30s (ema)
+  new best EPE 1.513 px -> runs/kft_v3_aprime/best.pt
+epoch   6 | frozen=False | trainable 1239892/1239916
+  epoch   6 step     0/88 loss 1.8603 lr 5.00e-05
+  epoch   6 step    50/88 loss 1.9738 lr 5.00e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch   6 | loss 1.9565 | val EPE 1.417 px | D1 8.12% | 33s (ema)
+  new best EPE 1.417 px -> runs/kft_v3_aprime/best.pt
+epoch   7 | frozen=False | trainable 1239892/1239916
+  epoch   7 step     0/88 loss 1.7219 lr 5.00e-05
+  epoch   7 step    50/88 loss 1.9742 lr 4.99e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch   7 | loss 1.9321 | val EPE 1.342 px | D1 7.55% | 30s (ema)
+  new best EPE 1.342 px -> runs/kft_v3_aprime/best.pt
+epoch   8 | frozen=False | trainable 1239892/1239916
+  epoch   8 step     0/88 loss 1.7521 lr 4.98e-05
+  epoch   8 step    50/88 loss 1.9076 lr 4.97e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch   8 | loss 1.9673 | val EPE 1.284 px | D1 7.10% | 32s (ema)
+  new best EPE 1.284 px -> runs/kft_v3_aprime/best.pt
+epoch   9 | frozen=False | trainable 1239892/1239916
+  epoch   9 step     0/88 loss 1.4943 lr 4.96e-05
+  epoch   9 step    50/88 loss 1.9030 lr 4.95e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+epoch   9 | loss 1.9824 | val EPE 1.240 px | D1 6.75% | 32s (ema)
+  new best EPE 1.240 px -> runs/kft_v3_aprime/best.pt
+epoch  10 | frozen=False | trainable 1239892/1239916
+  epoch  10 step     0/88 loss 2.1203 lr 4.93e-05
+  epoch  10 step    50/88 loss 1.9131 lr 4.91e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch  10 | loss 1.9199 | val EPE 1.208 px | D1 6.47% | 34s (ema)
+  new best EPE 1.208 px -> runs/kft_v3_aprime/best.pt
+epoch  11 | frozen=False | trainable 1239892/1239916
+  epoch  11 step     0/88 loss 1.3971 lr 4.89e-05
+  epoch  11 step    50/88 loss 2.1176 lr 4.87e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch  11 | loss 2.0809 | val EPE 1.179 px | D1 6.21% | 32s (ema)
+  new best EPE 1.179 px -> runs/kft_v3_aprime/best.pt
+epoch  12 | frozen=False | trainable 1239892/1239916
+  epoch  12 step     0/88 loss 1.5979 lr 4.85e-05
+  epoch  12 step    50/88 loss 1.9469 lr 4.82e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  12 | loss 1.9021 | val EPE 1.157 px | D1 6.00% | 33s (ema)
+  new best EPE 1.157 px -> runs/kft_v3_aprime/best.pt
+epoch  13 | frozen=False | trainable 1239892/1239916
+  epoch  13 step     0/88 loss 1.5821 lr 4.79e-05
+  epoch  13 step    50/88 loss 1.8787 lr 4.76e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch  13 | loss 1.8789 | val EPE 1.141 px | D1 5.86% | 34s (ema)
+  new best EPE 1.141 px -> runs/kft_v3_aprime/best.pt
+epoch  14 | frozen=False | trainable 1239892/1239916
+  epoch  14 step     0/88 loss 6.1831 lr 4.73e-05
+  epoch  14 step    50/88 loss 1.8049 lr 4.69e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  14 | loss 1.8414 | val EPE 1.129 px | D1 5.77% | 33s (ema)
+  new best EPE 1.129 px -> runs/kft_v3_aprime/best.pt
+epoch  15 | frozen=False | trainable 1239892/1239916
+  epoch  15 step     0/88 loss 1.8569 lr 4.66e-05
+  epoch  15 step    50/88 loss 1.8810 lr 4.62e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  15 | loss 1.8509 | val EPE 1.120 px | D1 5.68% | 32s (ema)
+  new best EPE 1.120 px -> runs/kft_v3_aprime/best.pt
+epoch  16 | frozen=False | trainable 1239892/1239916
+  epoch  16 step     0/88 loss 1.2222 lr 4.59e-05
+  epoch  16 step    50/88 loss 1.8074 lr 4.54e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+epoch  16 | loss 1.8275 | val EPE 1.112 px | D1 5.60% | 32s (ema)
+  new best EPE 1.112 px -> runs/kft_v3_aprime/best.pt
+epoch  17 | frozen=False | trainable 1239892/1239916
+  epoch  17 step     0/88 loss 1.6113 lr 4.50e-05
+  epoch  17 step    50/88 loss 1.7390 lr 4.45e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch  17 | loss 1.8038 | val EPE 1.106 px | D1 5.53% | 33s (ema)
+  new best EPE 1.106 px -> runs/kft_v3_aprime/best.pt
+epoch  18 | frozen=False | trainable 1239892/1239916
+  epoch  18 step     0/88 loss 6.2368 lr 4.41e-05
+  epoch  18 step    50/88 loss 1.8799 lr 4.36e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch  18 | loss 1.8266 | val EPE 1.100 px | D1 5.47% | 33s (ema)
+  new best EPE 1.100 px -> runs/kft_v3_aprime/best.pt
+epoch  19 | frozen=False | trainable 1239892/1239916
+  epoch  19 step     0/88 loss 2.1545 lr 4.32e-05
+  epoch  19 step    50/88 loss 1.7526 lr 4.26e-05
+epoch  19 | loss 1.7980 | val EPE 1.095 px | D1 5.43% | 28s (ema)
+  new best EPE 1.095 px -> runs/kft_v3_aprime/best.pt
+epoch  20 | frozen=False | trainable 1239892/1239916
+  epoch  20 step     0/88 loss 1.2957 lr 4.21e-05
+  epoch  20 step    50/88 loss 1.9999 lr 4.15e-05
+epoch  20 | loss 1.8842 | val EPE 1.091 px | D1 5.39% | 30s (ema)
+  new best EPE 1.091 px -> runs/kft_v3_aprime/best.pt
+epoch  21 | frozen=False | trainable 1239892/1239916
+  epoch  21 step     0/88 loss 1.2126 lr 4.10e-05
+  epoch  21 step    50/88 loss 1.7759 lr 4.04e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+epoch  21 | loss 1.7805 | val EPE 1.087 px | D1 5.36% | 37s (ema)
+  new best EPE 1.087 px -> runs/kft_v3_aprime/best.pt
+epoch  22 | frozen=False | trainable 1239892/1239916
+  epoch  22 step     0/88 loss 0.8845 lr 3.99e-05
+  epoch  22 step    50/88 loss 1.8210 lr 3.92e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch  22 | loss 1.9210 | val EPE 1.084 px | D1 5.33% | 33s (ema)
+  new best EPE 1.084 px -> runs/kft_v3_aprime/best.pt
+epoch  23 | frozen=False | trainable 1239892/1239916
+  epoch  23 step     0/88 loss 1.6129 lr 3.87e-05
+  epoch  23 step    50/88 loss 1.8373 lr 3.80e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  23 | loss 1.8500 | val EPE 1.080 px | D1 5.30% | 34s (ema)
+  new best EPE 1.080 px -> runs/kft_v3_aprime/best.pt
+epoch  24 | frozen=False | trainable 1239892/1239916
+  epoch  24 step     0/88 loss 0.7996 lr 3.75e-05
+  epoch  24 step    50/88 loss 1.8576 lr 3.67e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch  24 | loss 1.8034 | val EPE 1.077 px | D1 5.27% | 33s (ema)
+  new best EPE 1.077 px -> runs/kft_v3_aprime/best.pt
+epoch  25 | frozen=False | trainable 1239892/1239916
+  epoch  25 step     0/88 loss 1.7559 lr 3.62e-05
+  epoch  25 step    50/88 loss 1.8961 lr 3.54e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch  25 | loss 1.8912 | val EPE 1.073 px | D1 5.25% | 33s (ema)
+  new best EPE 1.073 px -> runs/kft_v3_aprime/best.pt
+epoch  26 | frozen=False | trainable 1239892/1239916
+  epoch  26 step     0/88 loss 1.5880 lr 3.49e-05
+  epoch  26 step    50/88 loss 2.0740 lr 3.41e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch  26 | loss 1.8912 | val EPE 1.070 px | D1 5.23% | 31s (ema)
+  new best EPE 1.070 px -> runs/kft_v3_aprime/best.pt
+epoch  27 | frozen=False | trainable 1239892/1239916
+  epoch  27 step     0/88 loss 0.9959 lr 3.35e-05
+  epoch  27 step    50/88 loss 1.9260 lr 3.27e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch  27 | loss 1.9181 | val EPE 1.067 px | D1 5.21% | 34s (ema)
+  new best EPE 1.067 px -> runs/kft_v3_aprime/best.pt
+epoch  28 | frozen=False | trainable 1239892/1239916
+  epoch  28 step     0/88 loss 1.4594 lr 3.21e-05
+  epoch  28 step    50/88 loss 1.9056 lr 3.13e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  28 | loss 1.8859 | val EPE 1.064 px | D1 5.19% | 33s (ema)
+  new best EPE 1.064 px -> runs/kft_v3_aprime/best.pt
+epoch  29 | frozen=False | trainable 1239892/1239916
+  epoch  29 step     0/88 loss 1.7096 lr 3.07e-05
+  epoch  29 step    50/88 loss 1.7396 lr 2.99e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  29 | loss 1.8635 | val EPE 1.061 px | D1 5.17% | 36s (ema)
+  new best EPE 1.061 px -> runs/kft_v3_aprime/best.pt
+epoch  30 | frozen=False | trainable 1239892/1239916
+  epoch  30 step     0/88 loss 1.0412 lr 2.93e-05
+  epoch  30 step    50/88 loss 1.8881 lr 2.85e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  30 | loss 1.8239 | val EPE 1.059 px | D1 5.16% | 32s (ema)
+  new best EPE 1.059 px -> runs/kft_v3_aprime/best.pt
+epoch  31 | frozen=False | trainable 1239892/1239916
+  epoch  31 step     0/88 loss 1.1550 lr 2.79e-05
+  epoch  31 step    50/88 loss 1.8370 lr 2.70e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch  31 | loss 1.7333 | val EPE 1.058 px | D1 5.14% | 32s (ema)
+  new best EPE 1.058 px -> runs/kft_v3_aprime/best.pt
+epoch  32 | frozen=False | trainable 1239892/1239916
+  epoch  32 step     0/88 loss 7.6623 lr 2.64e-05
+  epoch  32 step    50/88 loss 1.8440 lr 2.56e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  32 | loss 1.8172 | val EPE 1.056 px | D1 5.13% | 37s (ema)
+  new best EPE 1.056 px -> runs/kft_v3_aprime/best.pt
+epoch  33 | frozen=False | trainable 1239892/1239916
+  epoch  33 step     0/88 loss 3.2025 lr 2.50e-05
+  epoch  33 step    50/88 loss 1.9123 lr 2.41e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  33 | loss 1.9786 | val EPE 1.055 px | D1 5.12% | 33s (ema)
+  new best EPE 1.055 px -> runs/kft_v3_aprime/best.pt
+epoch  34 | frozen=False | trainable 1239892/1239916
+  epoch  34 step     0/88 loss 1.6770 lr 2.35e-05
+  epoch  34 step    50/88 loss 1.9007 lr 2.27e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  34 | loss 1.8902 | val EPE 1.054 px | D1 5.11% | 36s (ema)
+  new best EPE 1.054 px -> runs/kft_v3_aprime/best.pt
+epoch  35 | frozen=False | trainable 1239892/1239916
+  epoch  35 step     0/88 loss 1.3771 lr 2.21e-05
+  epoch  35 step    50/88 loss 1.7009 lr 2.12e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  35 | loss 1.7522 | val EPE 1.052 px | D1 5.10% | 33s (ema)
+  new best EPE 1.052 px -> runs/kft_v3_aprime/best.pt
+epoch  36 | frozen=False | trainable 1239892/1239916
+  epoch  36 step     0/88 loss 1.3212 lr 2.06e-05
+  epoch  36 step    50/88 loss 1.7316 lr 1.98e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  36 | loss 1.7658 | val EPE 1.052 px | D1 5.09% | 32s (ema)
+  new best EPE 1.052 px -> runs/kft_v3_aprime/best.pt
+epoch  37 | frozen=False | trainable 1239892/1239916
+  epoch  37 step     0/88 loss 2.0138 lr 1.92e-05
+  epoch  37 step    50/88 loss 1.8482 lr 1.84e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  37 | loss 1.8363 | val EPE 1.051 px | D1 5.08% | 35s (ema)
+  new best EPE 1.051 px -> runs/kft_v3_aprime/best.pt
+epoch  38 | frozen=False | trainable 1239892/1239916
+  epoch  38 step     0/88 loss 1.7348 lr 1.78e-05
+  epoch  38 step    50/88 loss 1.7069 lr 1.70e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  38 | loss 1.7763 | val EPE 1.049 px | D1 5.07% | 32s (ema)
+  new best EPE 1.049 px -> runs/kft_v3_aprime/best.pt
+epoch  39 | frozen=False | trainable 1239892/1239916
+  epoch  39 step     0/88 loss 1.6445 lr 1.64e-05
+  epoch  39 step    50/88 loss 1.7405 lr 1.56e-05
+epoch  39 | loss 1.7508 | val EPE 1.048 px | D1 5.07% | 29s (ema)
+  new best EPE 1.048 px -> runs/kft_v3_aprime/best.pt
+epoch  40 | frozen=False | trainable 1239892/1239916
+  epoch  40 step     0/88 loss 2.0357 lr 1.51e-05
+  epoch  40 step    50/88 loss 1.8494 lr 1.43e-05
+epoch  40 | loss 1.8123 | val EPE 1.047 px | D1 5.06% | 30s (ema)
+  new best EPE 1.047 px -> runs/kft_v3_aprime/best.pt
+epoch  41 | frozen=False | trainable 1239892/1239916
+  epoch  41 step     0/88 loss 1.2252 lr 1.38e-05
+  epoch  41 step    50/88 loss 1.6039 lr 1.30e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  41 | loss 1.6576 | val EPE 1.046 px | D1 5.05% | 35s (ema)
+  new best EPE 1.046 px -> runs/kft_v3_aprime/best.pt
+epoch  42 | frozen=False | trainable 1239892/1239916
+  epoch  42 step     0/88 loss 1.4263 lr 1.25e-05
+  epoch  42 step    50/88 loss 1.7410 lr 1.18e-05
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch  42 | loss 1.7247 | val EPE 1.046 px | D1 5.04% | 32s (ema)
+  new best EPE 1.046 px -> runs/kft_v3_aprime/best.pt
+epoch  43 | frozen=False | trainable 1239892/1239916
+  epoch  43 step     0/88 loss 1.9427 lr 1.12e-05
+  epoch  43 step    50/88 loss 2.0035 lr 1.06e-05
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch  43 | loss 1.9514 | val EPE 1.045 px | D1 5.03% | 32s (ema)
+  new best EPE 1.045 px -> runs/kft_v3_aprime/best.pt
+epoch  44 | frozen=False | trainable 1239892/1239916
+  epoch  44 step     0/88 loss 3.7905 lr 1.00e-05
+  epoch  44 step    50/88 loss 1.7935 lr 9.39e-06
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch  44 | loss 1.7649 | val EPE 1.044 px | D1 5.02% | 32s (ema)
+  new best EPE 1.044 px -> runs/kft_v3_aprime/best.pt
+epoch  45 | frozen=False | trainable 1239892/1239916
+  epoch  45 step     0/88 loss 1.4658 lr 8.91e-06
+  epoch  45 step    50/88 loss 1.6305 lr 8.28e-06
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+epoch  45 | loss 1.6325 | val EPE 1.043 px | D1 5.02% | 35s (ema)
+  new best EPE 1.043 px -> runs/kft_v3_aprime/best.pt
+epoch  46 | frozen=False | trainable 1239892/1239916
+  epoch  46 step     0/88 loss 1.7428 lr 7.82e-06
+  epoch  46 step    50/88 loss 1.8227 lr 7.23e-06
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  46 | loss 1.7040 | val EPE 1.042 px | D1 5.01% | 32s (ema)
+  new best EPE 1.042 px -> runs/kft_v3_aprime/best.pt
+epoch  47 | frozen=False | trainable 1239892/1239916
+  epoch  47 step     0/88 loss 1.4705 lr 6.79e-06
+  epoch  47 step    50/88 loss 1.8273 lr 6.24e-06
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  47 | loss 1.7549 | val EPE 1.042 px | D1 5.01% | 32s (ema)
+  new best EPE 1.042 px -> runs/kft_v3_aprime/best.pt
+epoch  48 | frozen=False | trainable 1239892/1239916
+  epoch  48 step     0/88 loss 1.0279 lr 5.83e-06
+  epoch  48 step    50/88 loss 1.7179 lr 5.31e-06
+  [thermal] held 2s, GPU now 64C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  48 | loss 1.7546 | val EPE 1.041 px | D1 5.00% | 33s (ema)
+  new best EPE 1.041 px -> runs/kft_v3_aprime/best.pt
+epoch  49 | frozen=False | trainable 1239892/1239916
+  epoch  49 step     0/88 loss 1.3098 lr 4.93e-06
+  epoch  49 step    50/88 loss 1.7893 lr 4.45e-06
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  49 | loss 1.7642 | val EPE 1.040 px | D1 5.00% | 34s (ema)
+  new best EPE 1.040 px -> runs/kft_v3_aprime/best.pt
+epoch  50 | frozen=False | trainable 1239892/1239916
+  epoch  50 step     0/88 loss 3.2257 lr 4.09e-06
+  epoch  50 step    50/88 loss 1.6593 lr 3.65e-06
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  50 | loss 1.7312 | val EPE 1.039 px | D1 5.00% | 33s (ema)
+  new best EPE 1.039 px -> runs/kft_v3_aprime/best.pt
+epoch  51 | frozen=False | trainable 1239892/1239916
+  epoch  51 step     0/88 loss 1.3627 lr 3.33e-06
+  epoch  51 step    50/88 loss 1.7657 lr 2.93e-06
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  51 | loss 1.6945 | val EPE 1.039 px | D1 4.99% | 34s (ema)
+  new best EPE 1.039 px -> runs/kft_v3_aprime/best.pt
+epoch  52 | frozen=False | trainable 1239892/1239916
+  epoch  52 step     0/88 loss 3.3649 lr 2.64e-06
+  epoch  52 step    50/88 loss 1.8061 lr 2.29e-06
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  52 | loss 1.7855 | val EPE 1.038 px | D1 4.99% | 34s (ema)
+  new best EPE 1.038 px -> runs/kft_v3_aprime/best.pt
+epoch  53 | frozen=False | trainable 1239892/1239916
+  epoch  53 step     0/88 loss 1.0315 lr 2.03e-06
+  epoch  53 step    50/88 loss 1.8133 lr 1.72e-06
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  53 | loss 1.7883 | val EPE 1.038 px | D1 4.99% | 31s (ema)
+  new best EPE 1.038 px -> runs/kft_v3_aprime/best.pt
+epoch  54 | frozen=False | trainable 1239892/1239916
+  epoch  54 step     0/88 loss 1.1825 lr 1.50e-06
+  epoch  54 step    50/88 loss 1.7114 lr 1.23e-06
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  54 | loss 1.6703 | val EPE 1.037 px | D1 4.98% | 32s (ema)
+  new best EPE 1.037 px -> runs/kft_v3_aprime/best.pt
+epoch  55 | frozen=False | trainable 1239892/1239916
+  epoch  55 step     0/88 loss 1.4485 lr 1.04e-06
+  epoch  55 step    50/88 loss 1.6739 lr 8.18e-07
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  55 | loss 1.7170 | val EPE 1.037 px | D1 4.98% | 30s (ema)
+  new best EPE 1.037 px -> runs/kft_v3_aprime/best.pt
+epoch  56 | frozen=False | trainable 1239892/1239916
+  epoch  56 step     0/88 loss 2.5741 lr 6.66e-07
+  epoch  56 step    50/88 loss 1.8577 lr 4.90e-07
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  56 | loss 1.7745 | val EPE 1.037 px | D1 4.98% | 32s (ema)
+  new best EPE 1.037 px -> runs/kft_v3_aprime/best.pt
+epoch  57 | frozen=False | trainable 1239892/1239916
+  epoch  57 step     0/88 loss 2.1106 lr 3.74e-07
+  epoch  57 step    50/88 loss 1.7432 lr 2.45e-07
+  [thermal] held 2s, GPU now 63C
+  [thermal] held 2s, GPU now 63C
+epoch  57 | loss 1.7478 | val EPE 1.037 px | D1 4.98% | 31s (ema)
+  new best EPE 1.037 px -> runs/kft_v3_aprime/best.pt
+epoch  58 | frozen=False | trainable 1239892/1239916
+  epoch  58 step     0/88 loss 1.1425 lr 1.65e-07
+  epoch  58 step    50/88 loss 1.8300 lr 8.42e-08
+epoch  58 | loss 1.7356 | val EPE 1.036 px | D1 4.97% | 29s (ema)
+  new best EPE 1.036 px -> runs/kft_v3_aprime/best.pt
+epoch  59 | frozen=False | trainable 1239892/1239916
+  epoch  59 step     0/88 loss 1.2009 lr 4.06e-08
+  epoch  59 step    50/88 loss 1.4889 lr 7.28e-09
+epoch  59 | loss 1.6264 | val EPE 1.036 px | D1 4.97% | 31s (ema)
+  new best EPE 1.036 px -> runs/kft_v3_aprime/best.pt
+
+done. best val EPE 1.036 px
+reference: Hailo stereonet reports 8.223 float / 10.3 quantized on KITTI
+[kft_v3_aprime] end rc=0 Thursday 24 September 2026 02:54:59 PM IST

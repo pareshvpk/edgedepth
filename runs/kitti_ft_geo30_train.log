@@ -1,0 +1,109 @@
+kitti_mixed: 160 KITTI 2015 + 194 KITTI 2012 = 354 training frames (val stays the KITTI 2015 40)
+disparity-aware sampling: 178 KITTI frames with GT >= 80 px weighted 3.0x, crops biased toward those rows
+initialised strictly from runs/kitti_ft_near30/last.pt
+device cuda | train 354 | val 40 | crop 320x768 | batch 4
+/home/paresh/.local/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return F.conv2d(input, weight, bias, self.stride,
+/home/paresh/.local/lib/python3.10/site-packages/torch/autograd/graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/home/paresh/.local/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:143: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+  epoch   0 step     0/88 loss 2.1425 lr 1.20e-06
+  epoch   0 step    50/88 loss 3.1634 lr 3.79e-06
+epoch   0 | loss 3.0350 | val EPE 1.134 px | D1 6.06% | 10s (ema)
+  new best EPE 1.134 px -> runs/kitti_ft_geo30/best.pt
+  epoch   1 step     0/88 loss 1.4700 lr 8.60e-06
+  epoch   1 step    50/88 loss 3.7327 lr 1.69e-05
+epoch   1 | loss 3.2937 | val EPE 1.134 px | D1 6.06% | 9s (ema)
+  new best EPE 1.134 px -> runs/kitti_ft_geo30/best.pt
+  epoch   2 step     0/88 loss 6.8212 lr 2.30e-05
+  epoch   2 step    50/88 loss 4.6276 lr 2.87e-05
+epoch   2 | loss 4.4399 | val EPE 1.134 px | D1 6.06% | 10s (ema)
+  epoch   3 step     0/88 loss 2.1084 lr 3.00e-05
+  epoch   3 step    50/88 loss 3.3667 lr 3.00e-05
+epoch   3 | loss 3.9145 | val EPE 1.134 px | D1 6.06% | 10s (ema)
+  epoch   4 step     0/88 loss 27.5935 lr 2.99e-05
+  epoch   4 step    50/88 loss 3.9139 lr 2.97e-05
+epoch   4 | loss 3.5617 | val EPE 1.133 px | D1 6.06% | 11s (ema)
+  new best EPE 1.133 px -> runs/kitti_ft_geo30/best.pt
+  epoch   5 step     0/88 loss 7.6358 lr 2.96e-05
+  epoch   5 step    50/88 loss 3.8495 lr 2.93e-05
+epoch   5 | loss 3.4757 | val EPE 1.133 px | D1 6.06% | 9s (ema)
+  new best EPE 1.133 px -> runs/kitti_ft_geo30/best.pt
+  epoch   6 step     0/88 loss 1.9458 lr 2.91e-05
+  epoch   6 step    50/88 loss 3.3683 lr 2.87e-05
+epoch   6 | loss 3.4208 | val EPE 1.132 px | D1 6.05% | 9s (ema)
+  new best EPE 1.132 px -> runs/kitti_ft_geo30/best.pt
+  epoch   7 step     0/88 loss 20.3436 lr 2.84e-05
+  epoch   7 step    50/88 loss 4.2292 lr 2.79e-05
+epoch   7 | loss 3.9137 | val EPE 1.131 px | D1 6.05% | 9s (ema)
+  new best EPE 1.131 px -> runs/kitti_ft_geo30/best.pt
+  epoch   8 step     0/88 loss 2.5266 lr 2.75e-05
+  epoch   8 step    50/88 loss 3.7905 lr 2.69e-05
+epoch   8 | loss 3.6420 | val EPE 1.132 px | D1 6.04% | 9s (ema)
+  epoch   9 step     0/88 loss 3.9688 lr 2.65e-05
+  epoch   9 step    50/88 loss 3.0446 lr 2.58e-05
+epoch   9 | loss 2.9897 | val EPE 1.134 px | D1 6.05% | 9s (ema)
+  epoch  10 step     0/88 loss 5.7493 lr 2.53e-05
+  epoch  10 step    50/88 loss 3.8131 lr 2.45e-05
+epoch  10 | loss 3.7014 | val EPE 1.135 px | D1 6.06% | 9s (ema)
+  epoch  11 step     0/88 loss 1.7241 lr 2.39e-05
+  epoch  11 step    50/88 loss 2.9379 lr 2.31e-05
+epoch  11 | loss 3.0382 | val EPE 1.137 px | D1 6.07% | 9s (ema)
+  epoch  12 step     0/88 loss 3.3567 lr 2.25e-05
+  epoch  12 step    50/88 loss 3.4593 lr 2.16e-05
+epoch  12 | loss 3.6524 | val EPE 1.138 px | D1 6.07% | 9s (ema)
+  epoch  13 step     0/88 loss 2.6304 lr 2.09e-05
+  epoch  13 step    50/88 loss 3.2120 lr 2.00e-05
+epoch  13 | loss 3.2564 | val EPE 1.139 px | D1 6.08% | 9s (ema)
+  epoch  14 step     0/88 loss 1.9184 lr 1.93e-05
+  epoch  14 step    50/88 loss 3.1568 lr 1.83e-05
+epoch  14 | loss 3.2906 | val EPE 1.139 px | D1 6.08% | 9s (ema)
+  epoch  15 step     0/88 loss 2.0745 lr 1.76e-05
+  epoch  15 step    50/88 loss 3.3278 lr 1.66e-05
+epoch  15 | loss 3.8467 | val EPE 1.140 px | D1 6.09% | 9s (ema)
+  epoch  16 step     0/88 loss 2.5471 lr 1.58e-05
+  epoch  16 step    50/88 loss 3.1978 lr 1.48e-05
+epoch  16 | loss 3.1420 | val EPE 1.140 px | D1 6.09% | 9s (ema)
+  epoch  17 step     0/88 loss 2.2673 lr 1.41e-05
+  epoch  17 step    50/88 loss 3.8111 lr 1.31e-05
+epoch  17 | loss 3.5976 | val EPE 1.141 px | D1 6.10% | 9s (ema)
+  epoch  18 step     0/88 loss 2.0395 lr 1.24e-05
+  epoch  18 step    50/88 loss 2.9866 lr 1.14e-05
+epoch  18 | loss 3.2151 | val EPE 1.142 px | D1 6.11% | 9s (ema)
+  epoch  19 step     0/88 loss 14.0086 lr 1.07e-05
+  epoch  19 step    50/88 loss 3.2937 lr 9.72e-06
+epoch  19 | loss 3.1708 | val EPE 1.143 px | D1 6.11% | 9s (ema)
+  epoch  20 step     0/88 loss 1.8734 lr 9.02e-06
+  epoch  20 step    50/88 loss 3.5176 lr 8.13e-06
+epoch  20 | loss 3.6551 | val EPE 1.143 px | D1 6.11% | 9s (ema)
+  epoch  21 step     0/88 loss 2.6074 lr 7.47e-06
+  epoch  21 step    50/88 loss 3.0504 lr 6.63e-06
+epoch  21 | loss 3.4230 | val EPE 1.143 px | D1 6.11% | 9s (ema)
+  epoch  22 step     0/88 loss 14.5626 lr 6.01e-06
+  epoch  22 step    50/88 loss 3.4338 lr 5.24e-06
+epoch  22 | loss 4.0533 | val EPE 1.143 px | D1 6.10% | 9s (ema)
+  epoch  23 step     0/88 loss 2.8877 lr 4.68e-06
+  epoch  23 step    50/88 loss 3.6765 lr 3.98e-06
+epoch  23 | loss 3.7152 | val EPE 1.143 px | D1 6.10% | 9s (ema)
+  epoch  24 step     0/88 loss 2.5705 lr 3.48e-06
+  epoch  24 step    50/88 loss 3.1231 lr 2.87e-06
+epoch  24 | loss 3.0800 | val EPE 1.143 px | D1 6.10% | 9s (ema)
+  epoch  25 step     0/88 loss 3.1307 lr 2.45e-06
+  epoch  25 step    50/88 loss 3.3148 lr 1.93e-06
+epoch  25 | loss 3.3751 | val EPE 1.143 px | D1 6.11% | 9s (ema)
+  epoch  26 step     0/88 loss 9.5402 lr 1.58e-06
+  epoch  26 step    50/88 loss 4.3604 lr 1.16e-06
+epoch  26 | loss 3.7450 | val EPE 1.143 px | D1 6.10% | 9s (ema)
+  epoch  27 step     0/88 loss 2.5056 lr 8.91e-07
+  epoch  27 step    50/88 loss 3.3711 lr 5.86e-07
+epoch  27 | loss 3.2106 | val EPE 1.142 px | D1 6.10% | 9s (ema)
+  epoch  28 step     0/88 loss 2.7434 lr 3.95e-07
+  epoch  28 step    50/88 loss 3.4491 lr 2.01e-07
+epoch  28 | loss 3.4595 | val EPE 1.142 px | D1 6.10% | 9s (ema)
+  epoch  29 step     0/88 loss 1.8249 lr 9.70e-08
+  epoch  29 step    50/88 loss 3.4970 lr 1.71e-08
+epoch  29 | loss 3.2567 | val EPE 1.142 px | D1 6.10% | 9s (ema)
+
+done. best val EPE 1.131 px
+reference: Hailo stereonet reports 8.223 float / 10.3 quantized on KITTI

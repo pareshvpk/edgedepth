@@ -1,0 +1,13 @@
+runs/kft_v3_aprime/best.pt: epoch 59, in-loop val EPE 1.036 px
+val split: 40 pairs
+
+protocol         pixels       EPE    D1-all
+masked        3,353,290    1.036p     4.97%
+official      3,861,014    1.124p     5.61%
+
+the left 192 columns and out-of-range ground truth cost +0.087 px EPE
+and +0.63 points of D1 when scored rather than excluded.
+
+reference: Hailo reports 8.223 px float / 10.3 px quantized for the original
+on KITTI, protocol unstated -- compare against the 'official' row, which is
+the conservative reading.

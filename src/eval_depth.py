@@ -43,7 +43,7 @@ import numpy as np
 import torch
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from model import HailoStereo  # noqa: E402
+from model import HailoStereo, build_model  # noqa: E402
 from data import Kitti2015  # noqa: E402
 
 # KITTI 2015 nominal rectified intrinsics -- the same values demo_server.py
@@ -219,7 +219,7 @@ def main():
     fb = args.focal * args.baseline
     device = "cuda" if torch.cuda.is_available() else "cpu"
     blob = torch.load(args.ckpt, map_location="cpu", weights_only=False)
-    model = HailoStereo()
+    model = build_model(blob)
     model.load_state_dict(blob.get("model", blob), strict=True)   # EXP-1
     model.to(device).eval()
     ds = Kitti2015(args.root, split=args.split)

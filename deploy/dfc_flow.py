@@ -43,6 +43,7 @@ bare TypeError.
 from __future__ import annotations
 
 import argparse
+import importlib.metadata
 import json
 import pathlib
 import subprocess
@@ -80,6 +81,48 @@ INDEX_ONNX_NODE = "/soft_argmin/index/Conv"
 # ImageNet statistics, 0..255 scale. Must equal src/data.py MEAN/STD x 255.
 NORM_MEAN = [123.675, 116.28, 103.53]
 NORM_STD = [58.395, 57.12, 57.375]
+
+
+def _resolve(path) -> pathlib.Path:
+    """Resolve a CLI path: relative paths anchor at ROOT, absolute pass through."""
+    p = pathlib.Path(path)
+    return p if p.is_absolute() else ROOT / p
+
+
+def _disp(path) -> str:
+    """Short display form: ROOT-relative when possible, absolute otherwise.
+
+    --build-dir / --hef / --onnx may point outside ROOT, where
+    Path.relative_to(ROOT) raises ValueError instead of printing.
+    """
+    p = pathlib.Path(path)
+    try:
+        return str(p.relative_to(ROOT))
+    except ValueError:
+        return str(p)
+
+
+def _dfc_major() -> int:
+    """Installed hailo_dataflow_compiler major version (3 or 5)."""
+    try:
+        return int(importlib.metadata.version("hailo_dataflow_compiler").split(".")[0])
+    except importlib.metadata.PackageNotFoundError:
+        sys.exit("hailo_dataflow_compiler distribution not found -- the Dataflow "
+                 "Compiler is not installed in this interpreter.\n"
+                 "See deploy/README.md for the install sequence.")
+
+
+def _parse_float_ref(s: str) -> tuple:
+    """Parse --float-ref MASKED,OFFICIAL,D1 into a 3-float tuple."""
+    try:
+        vals = tuple(float(x) for x in s.split(","))
+    except ValueError:
+        raise argparse.ArgumentTypeError(
+            f"--float-ref must be three comma-separated floats, got {s!r}")
+    if len(vals) != 3:
+        raise argparse.ArgumentTypeError(
+            f"--float-ref must be three comma-separated floats, got {s!r}")
+    return vals
 
 
 # ---------------------------------------------------------------------------
@@ -263,7 +306,7 @@ quantization_param({{{names['index']}}}, precision_mode=a16_w16)
 #    bias correction. QFT is what makes this step expensive.
 model_optimization_flavor(optimization_level={lvl}, compression_level=0)
 {ft}""")
-    print(f"  wrote {ALLS_OUT.relative_to(ROOT)}")
+    print(f"  wrote {_disp(ALLS_OUT)}")
 
 
 # ---------------------------------------------------------------------------
@@ -273,7 +316,7 @@ model_optimization_flavor(optimization_level={lvl}, compression_level=0)
 def step_parse(args):
     from hailo_sdk_client import ClientRunner
 
-    print(f"[parse] {ONNX.relative_to(ROOT)} -> {HW_ARCH}")
+    print(f"[parse] {_disp(ONNX)} -> {HW_ARCH}")
     runner = ClientRunner(hw_arch=HW_ARCH)
     runner.translate_onnx_model(
         str(ONNX), NET_NAME,
@@ -283,7 +326,7 @@ def step_parse(args):
     )
     BUILD.mkdir(parents=True, exist_ok=True)
     runner.save_har(str(HAR_PARSED))
-    print(f"  wrote {HAR_PARSED.relative_to(ROOT)}")
+    print(f"  wrote {_disp(HAR_PARSED)}")
 
     names = resolve_names(runner)
     NAMES.write_text(json.dumps(names, indent=2))
@@ -317,12 +360,12 @@ def _calib():
 def step_optimize(args):
     from hailo_sdk_client import ClientRunner
 
-    print(f"[optimize] {HAR_PARSED.relative_to(ROOT)}")
+    print(f"[optimize] {_disp(HAR_PARSED)}")
     runner = ClientRunner(har=str(HAR_PARSED), hw_arch=HW_ARCH)
     runner.load_model_script(str(ALLS_OUT))
     runner.optimize(_calib())
     runner.save_har(str(HAR_OPT))
-    print(f"  wrote {HAR_OPT.relative_to(ROOT)}")
+    print(f"  wrote {_disp(HAR_OPT)}")
     return runner
 
 
@@ -361,7 +404,7 @@ def step_emulate(args):
     for tag in wanted:
         ctx_enum, har, raw_input = contexts[tag]
         if not har.exists():
-            print(f"  {tag}: SKIP -- {har.relative_to(ROOT)} missing")
+            print(f"  {tag}: SKIP -- {_disp(har)} missing")
             continue
         runner = ClientRunner(har=str(har), hw_arch=HW_ARCH)
         names = json.loads(NAMES.read_text())
@@ -494,20 +537,20 @@ def write_compile_alls(args) -> None:
         lines.append("allocator_param(width_splitter_defuse=disabled)")
         note += ", width_splitter_defuse=disabled"
     ALLS_COMPILE.write_text("\n".join(lines) + "\n")
-    print(f"  wrote {ALLS_COMPILE.relative_to(ROOT)} ({note})")
+    print(f"  wrote {_disp(ALLS_COMPILE)} ({note})")
 
 
 def step_compile(args):
     from hailo_sdk_client import ClientRunner
 
-    print(f"[compile] {HAR_OPT.relative_to(ROOT)} -> {HW_ARCH}")
+    print(f"[compile] {_disp(HAR_OPT)} -> {HW_ARCH}")
     runner = ClientRunner(har=str(HAR_OPT), hw_arch=HW_ARCH)
     write_compile_alls(args)
     runner.load_model_script(str(ALLS_COMPILE))
     t0 = time.time()
     hef = runner.compile()
     HEF.write_bytes(hef)
-    print(f"  wrote {HEF.relative_to(ROOT)} "
+    print(f"  wrote {_disp(HEF)} "
           f"({HEF.stat().st_size/1e6:.2f} MB) in {time.time()-t0:.0f}s")
     runner.save_har(str(BUILD / "hailo_stereo_compiled.har"))
 
@@ -516,7 +559,7 @@ def step_profile(args):
     har = BUILD / "hailo_stereo_compiled.har"
     har = har if har.exists() else HAR_OPT
     out = BUILD / "profile.html"
-    print(f"[profile] {har.relative_to(ROOT)}")
+    print(f"[profile] {_disp(har)}")
     # The `hailo` console script lives in the DFC venv's bin/, which is NOT on
     # PATH when this runs via deploy/hailo-py (that wrapper invokes the venv
     # interpreter directly rather than activating the venv). Resolve it next to
@@ -529,9 +572,9 @@ def step_profile(args):
     if r.returncode != 0:
         sys.stderr.write(r.stderr)
         print("  profiler failed -- try: hailo profiler "
-              f"{har.relative_to(ROOT)}")
+              f"{_disp(har)}")
         return
-    print(f"  wrote {out.relative_to(ROOT)}")
+    print(f"  wrote {_disp(out)}")
     for line in r.stdout.splitlines():
         if any(k in line.lower() for k in ("fps", "latency", "utilization")):
             print(f"  {line.strip()}")
@@ -548,6 +591,25 @@ def main():
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("step", choices=list(STEPS) + ["all"])
+    p.add_argument("--hw-arch", choices=["hailo15h", "hailo8", "hailo8l"],
+                   default="hailo15h",
+                   help="target architecture (default: hailo15h)")
+    p.add_argument("--onnx", default="artifacts/hailo_stereo.onnx",
+                   help="input ONNX, ROOT-relative unless absolute "
+                        "(default: artifacts/hailo_stereo.onnx)")
+    p.add_argument("--build-dir", default="deploy/build",
+                   help="directory for every file the steps write: parsed/opt/"
+                        "compiled HARs, resolved .alls, compile .alls, "
+                        "resolved_names.json, emulator_results.json, profile "
+                        "html (default: deploy/build)")
+    p.add_argument("--hef", default=None,
+                   help="compile: output HEF path (default: "
+                        "artifacts/hailo_stereo_<hw-arch>.hef)")
+    p.add_argument("--float-ref", type=_parse_float_ref,
+                   default="1.156,1.248,6.87", metavar="MASKED,OFFICIAL,D1",
+                   help="torch float reference (EPE masked, EPE official, D1 "
+                        "official) for the checkpoint being compiled "
+                        "(default: 1.156,1.248,6.87)")
     p.add_argument("--limit", type=int, default=None,
                    help="score only the first N val pairs (smoke test)")
     p.add_argument("--contexts", nargs="*",
@@ -585,6 +647,36 @@ def main():
         sys.exit("hailo_sdk_client not importable -- the Dataflow Compiler is "
                  "not installed in this interpreter.\n"
                  "See deploy/README.md for the install sequence.")
+
+    # Apply the CLI overrides to the module-level path/constant globals before
+    # any step runs, so every step follows them. With no new args these are
+    # exactly the import-time defaults, and behaviour is unchanged.
+    global BUILD, ONNX, ALLS_OUT, HAR_PARSED, HAR_OPT, HEF, NAMES, \
+        ALLS_COMPILE, HW_ARCH, TORCH_FLOAT_REF
+    HW_ARCH = args.hw_arch
+    ONNX = _resolve(args.onnx)
+    BUILD = _resolve(args.build_dir)
+    ALLS_OUT = BUILD / "hailo_stereo.resolved.alls"
+    HAR_PARSED = BUILD / "hailo_stereo.har"
+    HAR_OPT = BUILD / "hailo_stereo_opt.har"
+    NAMES = BUILD / "resolved_names.json"
+    ALLS_COMPILE = BUILD / "hailo_stereo.compile.alls"
+    HEF = _resolve(args.hef) if args.hef else \
+        ROOT / "artifacts" / f"hailo_stereo_{HW_ARCH}.hef"
+    TORCH_FLOAT_REF = tuple(args.float_ref)
+
+    # DFC 3.x targets hailo8/hailo8l and rejects hailo15h; DFC 5.x targets
+    # hailo15h (among others) and rejects hailo8. Fail here with the fix
+    # instead of three steps into a parse/compile.
+    major = _dfc_major()
+    need = 3 if HW_ARCH in ("hailo8", "hailo8l") else 5
+    if major != need:
+        want = "~/.venvs/hailo-dfc3" if need == 3 else "~/.venvs/hailo-dfc"
+        sys.exit(f"--hw-arch {HW_ARCH} requires DFC {need}.x, but the "
+                 f"installed hailo_dataflow_compiler is {major}.x.\n"
+                 f"Rerun under the right venv, e.g. "
+                 f"HAILO_VENV={want} ./deploy/hailo-py deploy/dfc_flow.py "
+                 f"{args.step} --hw-arch {HW_ARCH}")
 
     BUILD.mkdir(parents=True, exist_ok=True)
     order = ["parse", "optimize", "emulate", "compile", "profile"] \

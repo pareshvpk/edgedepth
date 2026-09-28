@@ -28,7 +28,7 @@ import torch
 from torch.utils.data import DataLoader
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from model import HailoStereo  # noqa: E402
+from model import HailoStereo, build_model  # noqa: E402
 from train import build_datasets, evaluate, SCENEFLOW_HOLDOUT  # noqa: E402
 
 
@@ -62,7 +62,7 @@ def main():
                             num_workers=max(1, args.workers // 2), pin_memory=True)
 
     blob = torch.load(args.ckpt, map_location="cpu", weights_only=False)
-    model = HailoStereo()
+    model = build_model(blob)
     model.load_state_dict(blob.get("model", blob), strict=True)   # EXP-1
     model.to(device).eval()
 

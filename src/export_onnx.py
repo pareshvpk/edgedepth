@@ -29,7 +29,10 @@ import torch
 from onnx import numpy_helper, shape_inference
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from model import HailoStereo, count_ops  # noqa: E402
+from model import HailoStereo, build_model, count_ops  # noqa: E402
+
+# constructor arguments of the model being exported; set by export()
+ARCH: dict = {}
 
 HEIGHT, WIDTH = 368, 1232
 OUT = pathlib.Path(__file__).resolve().parent.parent / "artifacts" / "hailo_stereo.onnx"
@@ -44,9 +47,12 @@ DYNAMIC_SHAPE_OPS = {"Shape", "ConstantOfShape", "NonZero", "Range",
 
 
 def export(ckpt: str | None = None, out: pathlib.Path = OUT) -> pathlib.Path:
-    model = HailoStereo()
+    blob = (torch.load(ckpt, map_location="cpu", weights_only=False)
+            if ckpt else None)
+    model = build_model(blob)
+    ARCH.clear()
+    ARCH.update(model.arch)
     if ckpt:
-        blob = torch.load(ckpt, map_location="cpu", weights_only=False)
         # STRICT -- the original's export used strict=False and silently shipped
         # randomly initialised tensors wherever the checkpoint did not fit (EXP-1)
         model.load_state_dict(blob.get("model", blob), strict=True)
@@ -235,7 +241,7 @@ def compute_budget():
     print("\n" + "=" * 68)
     print("COMPUTE BUDGET")
     print("=" * 68)
-    model = HailoStereo()
+    model = HailoStereo(**ARCH)
     totals, total = count_ops(model, HEIGHT, WIDTH)
     order = sorted(totals.items(), key=lambda kv: -kv[1])
     print(f"{'stage':18s} {'GMAC':>9s} {'GOPS':>9s} {'share':>8s}")
@@ -285,7 +291,7 @@ def parity(path: pathlib.Path, reference_state: dict) -> int:
         print(f"[FAIL] onnxruntime unavailable ({exc}); parity NOT checked")
         return 1
 
-    ref = HailoStereo()
+    ref = HailoStereo(**ARCH)
     ref.load_state_dict(reference_state, strict=True)
     ref.eval()
 

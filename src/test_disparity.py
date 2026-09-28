@@ -172,6 +172,118 @@ def test_disparity_output_is_sane():
 
 
 # ---------------------------------------------------------------------------
+# 4. refinement v2 (Hailo-safe, 1/8 matching unchanged)
+# ---------------------------------------------------------------------------
+
+def test_base_arch_keys_unchanged():
+    """refine="base" must build EXACTLY today's graph: same state_dict keys
+    and shapes as a HailoStereo() built with no args."""
+    a = HailoStereo()
+    b = HailoStereo(refine="base")
+    ka, kb = list(a.state_dict().keys()), list(b.state_dict().keys())
+    assert ka == kb, \
+        f"base arch keys changed: only-in-base {[k for k in ka if k not in kb][:5]}, " \
+        f"only-in-explicit {[k for k in kb if k not in ka][:5]}"
+    for k in ka:
+        assert tuple(a.state_dict()[k].shape) == tuple(b.state_dict()[k].shape), \
+            f"base arch shape changed at {k}"
+    print(f"  ok  refine=\"base\" keeps all {len(ka)} state_dict keys")
+
+
+def test_v2_forward_shapes():
+    """v2 in eval returns a single [1,1,H,W] tensor; in train a 4-item list."""
+    model = HailoStereo(refine="v2").eval()
+    left, right = torch.rand(1, 3, 256, 512), torch.rand(1, 3, 256, 512)
+    with torch.no_grad():
+        out = model(left, right)
+    assert isinstance(out, torch.Tensor), f"eval must return a tensor, got {type(out)}"
+    assert out.shape == (1, 1, 256, 512), f"unexpected eval shape {tuple(out.shape)}"
+    assert torch.isfinite(out).all(), "eval output contains NaN or Inf"
+    model.train()
+    with torch.no_grad():
+        outs = model(left, right)
+    assert isinstance(outs, list) and len(outs) == 4, \
+        f"train must return a 4-item list, got {type(outs)}"
+    print(f"  ok  v2 eval {tuple(out.shape)}, train {[tuple(o.shape) for o in outs]}")
+
+
+def test_v2_fuse_parity():
+    """fuse_temperature_() must not change v2 eval output (max abs diff < 1e-4)."""
+    torch.manual_seed(0)
+    model = HailoStereo(refine="v2").eval()
+    left, right = torch.rand(1, 3, 96, 320), torch.rand(1, 3, 96, 320)
+    with torch.no_grad():
+        before = model(left, right)
+    model.fuse_temperature_()
+    with torch.no_grad():
+        after = model(left, right)
+    diff = (before - after).abs().max().item()
+    assert diff < 1e-4, f"fused v2 output drifted by {diff:.2e} px"
+    print(f"  ok  v2 fuse parity, max abs diff {diff:.2e} px")
+
+
+# ---------------------------------------------------------------------------
+# 5. refinement v3 (Hailo-safe 1/4 difference-only cost volume, no ew_mult)
+# ---------------------------------------------------------------------------
+
+# state_dict key counts recorded BEFORE the v3 edit (default constructor args)
+BASE_KEY_COUNT = 286
+V2_KEY_COUNT = 322
+
+
+def test_base_v2_keys_unchanged():
+    """refine="base"/"v2" graphs must be untouched by the v3 edit: hard-coded
+    key counts plus key-set equality against a freshly built model each."""
+    base = HailoStereo(refine="base")
+    v2 = HailoStereo(refine="v2")
+    kb, kv = list(base.state_dict().keys()), list(v2.state_dict().keys())
+    assert len(kb) == BASE_KEY_COUNT, \
+        f"base keys {len(kb)} != pre-v3 count {BASE_KEY_COUNT}"
+    assert len(kv) == V2_KEY_COUNT, \
+        f"v2 keys {len(kv)} != pre-v3 count {V2_KEY_COUNT}"
+    assert kb == list(HailoStereo().state_dict().keys()), \
+        "base key order changed"
+    assert kv == list(HailoStereo(refine="v2").state_dict().keys()), \
+        "v2 key order changed"
+    assert not [k for k in kb + kv
+                if k.split(".")[0] in ("match4", "cost_volume4", "cost4_proj")], \
+        "v3-only modules leaked into base/v2"
+    print(f"  ok  base {len(kb)} keys, v2 {len(kv)} keys, both unchanged")
+
+
+def test_v3_forward_shapes():
+    """v3 in eval returns a single [1,1,H,W] tensor; in train a 4-item list."""
+    model = HailoStereo(refine="v3").eval()
+    left, right = torch.rand(1, 3, 256, 512), torch.rand(1, 3, 256, 512)
+    with torch.no_grad():
+        out = model(left, right)
+    assert isinstance(out, torch.Tensor), f"eval must return a tensor, got {type(out)}"
+    assert out.shape == (1, 1, 256, 512), f"unexpected eval shape {tuple(out.shape)}"
+    assert torch.isfinite(out).all(), "eval output contains NaN or Inf"
+    model.train()
+    with torch.no_grad():
+        outs = model(left, right)
+    assert isinstance(outs, list) and len(outs) == 4, \
+        f"train must return a 4-item list, got {type(outs)}"
+    print(f"  ok  v3 eval {tuple(out.shape)}, train {[tuple(o.shape) for o in outs]}")
+
+
+def test_v3_fuse_parity():
+    """fuse_temperature_() must not change v3 eval output (max abs diff < 1e-4)."""
+    torch.manual_seed(0)
+    model = HailoStereo(refine="v3").eval()
+    left, right = torch.rand(1, 3, 96, 320), torch.rand(1, 3, 96, 320)
+    with torch.no_grad():
+        before = model(left, right)
+    model.fuse_temperature_()
+    with torch.no_grad():
+        after = model(left, right)
+    diff = (before - after).abs().max().item()
+    assert diff < 1e-4, f"fused v3 output drifted by {diff:.2e} px"
+    print(f"  ok  v3 fuse parity, max abs diff {diff:.2e} px")
+
+
+# ---------------------------------------------------------------------------
 
 def main():
     tests = [
@@ -181,6 +293,12 @@ def main():
         ("cost volume levels distinct", test_cost_volume_slices_are_distinct),
         ("matching recovers known disparity", test_matching_finds_known_disparity),
         ("output is well formed", test_disparity_output_is_sane),
+        ("base arch keys unchanged", test_base_arch_keys_unchanged),
+        ("v2 forward shapes", test_v2_forward_shapes),
+        ("v2 fuse parity", test_v2_fuse_parity),
+        ("base/v2 keys unchanged", test_base_v2_keys_unchanged),
+        ("v3 forward shapes", test_v3_forward_shapes),
+        ("v3 fuse parity", test_v3_fuse_parity),
     ]
     failed = 0
     for title, fn in tests:

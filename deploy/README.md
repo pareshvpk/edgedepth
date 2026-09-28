@@ -252,6 +252,27 @@ byte-identical backup.
 it belonged to the discarded 0.8 build. Re-run `compile` to regenerate one
 matching the shipped HEF.
 
+## Hailo-8 (DFC 3.34)
+
+The 5.x compiler line dropped Hailo-8, so Hailo-8 builds use DFC 3.34.0 in
+`~/.venvs/hailo-dfc3` (same install sequence as `install_dfc.sh`, with the
+3.34 wheel). `dfc_flow.py` takes `--hw-arch hailo8` plus the candidate ONNX,
+a separate build dir, and that checkpoint's float reference — shipped
+artefacts are untouched:
+
+```bash
+HAILO_VENV=~/.venvs/hailo-dfc3 ./deploy/hailo-py deploy/dfc_flow.py all --hw-arch hailo8 --onnx runs/final_candidates/s60ep58.onnx --build-dir deploy/build_hailo8_s60ep58 --float-ref 0.987,1.067,4.53 --compiler-effort 0
+```
+
+`--hw-arch` selects the venv-gated toolchain (hailo8/hailo8l need DFC 3.x,
+hailo15h needs 5.x; the wrong pairing exits with the right `HAILO_VENV` to
+use). Every generated file follows `--build-dir`; the HEF defaults to
+`artifacts/hailo_stereo_<hw-arch>.hef`. The model/compile scripts need no
+3.34-specific form — DFC 3.34 accepts the emitted `normalization`,
+`quantization_param`, `model_optimization_flavor`, `resources_param` and
+`performance_param(compiler_optimization_level=...)` syntax as-is (verified
+via `load_model_script` on 3.34.0).
+
 ## No device on this machine
 
 There is no Hailo PCIe/M.2 card and no `hailort` here, so `dfc_flow.py`
