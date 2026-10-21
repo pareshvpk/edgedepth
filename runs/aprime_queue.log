@@ -1,9 +1,0 @@
-=== RESUME after reboot Thursday 24 September 2026 12:11:38 PM IST ===
-[auto] battery 44% < 50, waiting 13:21:11
-[auto] battery 38% < 50, waiting 13:31:11
-[auto] battery 36% < 50, waiting 13:41:11
-[auto] battery 47% < 50, waiting 13:51:11
-=== [auto] attempt 1/6 Thursday 24 September 2026 02:01:13 PM IST ===
-[auto] run_aprime.sh rc=0 Thursday 24 September 2026 02:54:59 PM IST
-[auto] A' finished
-[auto] @reboot hook removed

@@ -28,3 +28,12 @@ Thumbs.db
 
 # Per-target DFC build outputs (large .har/.hef)
 deploy/build_*/
+
+# Scratch outputs (audit scripts write to results/; anything dumped at the root is stray)
+/*.npy
+/*.png
+/*.csv
+/*.json
+/report.md
+notes/_scratch/
+deploy/pi/*.npz
