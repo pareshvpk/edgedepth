@@ -1,7 +1,7 @@
 """Pi desktop demo: run a KITTI stereo pair on the Hailo-8, print the details, show images + 3D point cloud.
 
 Run it from a terminal ON THE PI DESKTOP (not over ssh), in the folder holding demo_kitti.py,
-EdgeDepth-8_hailo8.hef and kitti_val40.npz:
+EdgeDepth_hailo8.hef and kitti_val40.npz:
 
     python3 demo_kitti_view.py --scene 000173_10
     python3 demo_kitti_view.py --scene 000173_10 --point 800 300 --point 400 250
@@ -43,7 +43,7 @@ def to_xyz(u, v, d):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--hef", default="EdgeDepth-8_hailo8.hef")
+    ap.add_argument("--hef", default="EdgeDepth_hailo8.hef")
     ap.add_argument("--pairs", default="kitti_val40.npz")
     ap.add_argument("--scene", default="000173_10", help="scene name or index 0-39 (--list shows them)")
     ap.add_argument("--point", nargs=2, type=int, action="append", metavar=("U", "V"),
@@ -91,7 +91,7 @@ def main():
                          "text.color": INK, "axes.labelcolor": INK2, "xtick.color": INK2, "ytick.color": INK2,
                          "axes.edgecolor": GRID, "font.size": 9, "axes.titleweight": "bold",
                          "axes.titlelocation": "left", "axes.titlesize": 10})
-    title = f"KITTI 2015 {names[i]}  |  EdgeDepth-8 on Hailo-8" + (f"  |  {ms:.1f} ms" if ms == ms else "")
+    title = f"KITTI 2015 {names[i]}  |  EdgeDepth on Hailo-8" + (f"  |  {ms:.1f} ms" if ms == ms else "")
 
     # ---- Window 1: stereo pair + disparity
     f1, ax = plt.subplots(3, 1, figsize=(10, 9.2), num="Window 1 - Stereo input + Hailo-8 disparity")

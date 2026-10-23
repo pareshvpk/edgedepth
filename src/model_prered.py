@@ -1,10 +1,10 @@
 """
-EdgeDepth-8-prered -- a mathematically identical copy of the EdgeDepth-8
+EdgeDepth-prered -- a mathematically identical copy of the EdgeDepth
 matching path with the cost volume pre-reduced for Hailo-8 allocation.
 
 Why this exists
 --------------
-EdgeDepth-8-grouped (src/model_grouped.py, GroupedCostVolume) fails Hailo-8
+EdgeDepth-grouped (src/model_grouped.py, GroupedCostVolume) fails Hailo-8
 allocation: its cost volume is a 1536-channel tensor (cat[sub 768 | corr 768])
 feeding one grouped 1x1 conv (1536 -> 384, groups=384), which the compiler
 re-splits into 24 pieces and cannot route. This module computes the SAME
@@ -34,7 +34,7 @@ New cost volume (class PreReducedCostVolume below)::
 
 which returns ``torch.cat([sub, corr], 1)`` = ``[all sub (d-major) | all corr
 (d-major)]`` -- EXACTLY the same output channel layout as GroupedCostVolume,
-so the aggregation.stem input-channel permutation used by EdgeDepth-8-grouped
+so the aggregation.stem input-channel permutation used by EdgeDepth-grouped
 (_stem_channel_perm in src/model_grouped.py) applies unchanged.
 
 Static-graph notes (Hailo parser needs a static graph)
@@ -80,7 +80,7 @@ __all__ = [
 class PreReducedCostVolume(nn.Module):
     """Narrow-layer equivalent of ``CostVolume(ch, num_disp, groups, cost="both")``.
 
-    Only the ``"both"`` cost is supported -- that is the EdgeDepth-8 arch, and
+    Only the ``"both"`` cost is supported -- that is the EdgeDepth arch, and
     the fused layout (sub half followed by corr half) is specific to it.
 
     The sub half is pre-reduced: ``reduce`` (a per-pixel linear map with no
@@ -116,7 +116,7 @@ class PreReducedCostVolume(nn.Module):
         rl = self.reduce(left)                             # [B, G, h, w]
         rr = self.reduce(right)                            # [B, G, h, w]
         # Pre-reduced differences: one narrow ew_sub on D*G channels
-        # (192 for the EdgeDepth-8 arch) instead of a 1536-wide one.
+        # (192 for the EdgeDepth arch) instead of a 1536-wide one.
         sub = (torch.cat([rl] * d, dim=1)                  # [B, D*G, h, w]
                - torch.cat(_shift_all(rr, d), dim=1))      # [B, D*G, h, w]
         big_left = torch.cat([left] * d, dim=1)            # [B, D*C, h, w]
@@ -128,7 +128,7 @@ class PreReducedCostVolume(nn.Module):
 class HailoStereoPrered(HailoStereo):
     """A HailoStereo whose cost volume is the pre-reduced :class:`PreReducedCostVolume`.
 
-    Only ``cost="both"`` with ``refine="base"`` is supported -- the EdgeDepth-8
+    Only ``cost="both"`` with ``refine="base"`` is supported -- the EdgeDepth
     configuration. Everything else (features, aggregation, soft-argmin,
     refinement ladder) is inherited unchanged from :class:`HailoStereo`.
     """

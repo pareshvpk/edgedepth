@@ -1,5 +1,5 @@
 """
-Equivalence tests for the single-shift dense cost volume (EdgeDepth-8-dense24).
+Equivalence tests for the single-shift dense cost volume (EdgeDepth).
 
 The dense24 fused_sub must compute what DenseCorrCostVolume's reduce-then-shift
 sub path computes, for any weights -- the expansion is exact (block-diagonal,
@@ -145,7 +145,7 @@ def test_stem_perm_is_consistent():
 
 
 def test_rejects_non_both_cost():
-    """Only cost='both' (the EdgeDepth-8 arch) can be converted."""
+    """Only cost='both' (the EdgeDepth arch) can be converted."""
     torch.manual_seed(0)
     try:
         HailoStereoDense24(cost="sub")

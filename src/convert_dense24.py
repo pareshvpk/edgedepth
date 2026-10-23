@@ -1,9 +1,9 @@
 """
-Convert EdgeDepth-8-dense to EdgeDepth-8-dense24 and verify the conversion.
+Convert EdgeDepth-dense to EdgeDepth and verify the conversion.
 
     python src/convert_dense24.py \
-        --src release/EdgeDepth-8/EdgeDepth-8.pt \
-        --out-dir release/EdgeDepth-8-dense24
+        --src release/EdgeDepth/EdgeDepth.pt \
+        --out-dir release/EdgeDepth
 
 Steps:
   a. load the original checkpoint, build the dense model via
@@ -15,14 +15,14 @@ Steps:
   c. Score both on the 40 pairs with the same metric as src/eval_kitti.py
      (masked + official EPE, D1). Dense24 must match dense to 3 decimals
      (expected: 0.987 masked / 1.067 official EPE).
-  d. Save EdgeDepth-8-dense24.pt (state_dict + arch + cost_layout + source).
-  e. Export EdgeDepth-8-dense24.onnx mirroring src/export_onnx.py exactly,
+  d. Save EdgeDepth.pt (state_dict + arch + cost_layout + source).
+  e. Export EdgeDepth.onnx mirroring src/export_onnx.py exactly,
      plus an onnxruntime check on 2 pairs vs torch (< 1e-3 px).
    f. Op-count table (Conv, Sub, Mul, Concat, Slice, total) for the original
       ONNX vs the grouped ONNX vs the prered ONNX vs the dense ONNX vs the
       new ONNX, ONNX channel widths of the cost-volume tensors, and MAC
       count via model.count_ops.
-  g. Write release/EdgeDepth-8-dense24/MODEL_CARD.md.
+  g. Write release/EdgeDepth/MODEL_CARD.md.
 
 Uses CUDA if available; checks the GPU temperature first and waits until it
 is below 75 C before doing GPU work.
@@ -172,9 +172,9 @@ def onnx_cost_volume_widths(path: pathlib.Path) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--src", required=True,
-                    help="source checkpoint, e.g. release/EdgeDepth-8/EdgeDepth-8.pt")
+                    help="source checkpoint, e.g. release/EdgeDepth/EdgeDepth.pt")
     ap.add_argument("--out-dir", required=True,
-                    help="output dir, e.g. release/EdgeDepth-8-dense24")
+                    help="output dir, e.g. release/EdgeDepth")
     ap.add_argument("--kitti-root", default=str(REPO / "data" / "kitti2015" / "training"),
                     help="KITTI 2015 training root holding image_2/image_3/disp_occ_0")
     ap.add_argument("--orig-onnx", default=None,
@@ -182,13 +182,13 @@ def main() -> int:
                          "(default: <src-stem>.onnx next to --src)")
     ap.add_argument("--grouped-onnx", default=None,
                     help="grouped ONNX for the op table "
-                         "(default: release/EdgeDepth-8-grouped/EdgeDepth-8-grouped.onnx)")
+                         "(default: release/EdgeDepth-grouped/EdgeDepth-grouped.onnx)")
     ap.add_argument("--prered-onnx", default=None,
                     help="prered ONNX for the op table "
-                         "(default: release/EdgeDepth-8-prered/EdgeDepth-8-prered.onnx)")
+                         "(default: release/EdgeDepth-prered/EdgeDepth-prered.onnx)")
     ap.add_argument("--dense-onnx", default=None,
                     help="dense ONNX for the op table "
-                         "(default: release/EdgeDepth-8-dense/EdgeDepth-8-dense.onnx)")
+                         "(default: release/EdgeDepth-dense/EdgeDepth-dense.onnx)")
     ap.add_argument("--device", default="cpu", choices=("cpu", "cuda", "auto"),
                     help="evaluation device for the equivalence/EPE gate "
                          "(default: cpu -- deterministic; cuda grouped-conv "
@@ -275,14 +275,14 @@ def main() -> int:
     print("=" * 68)
     print("(d) save checkpoint")
     print("=" * 68)
-    ckpt_path = out_dir / "EdgeDepth-8-dense24.pt"
+    ckpt_path = out_dir / "EdgeDepth.pt"
     torch.save({
         "model": {k: v.cpu() for k, v in model.state_dict().items()},
         "arch": dict(model.arch),
         "cost_layout": "dense24",
         "source_ckpt": str(args.src),
         "source_arch": dict(orig.arch),
-        "note": ("EdgeDepth-8 with a single-shift cost='both' cost volume "
+        "note": ("EdgeDepth with a single-shift cost='both' cost volume "
                  "(DenseSubCorrCostVolume): ONE _shift_all on right (24 "
                  "slices), then a DENSE 1x1 fused_sub over stacked "
                  "differences (exact block-diagonal expansion of reduce) "
@@ -297,7 +297,7 @@ def main() -> int:
     print("=" * 68)
     print("(e) ONNX export + onnxruntime check")
     print("=" * 68)
-    onnx_path = out_dir / "EdgeDepth-8-dense24.onnx"
+    onnx_path = out_dir / "EdgeDepth.onnx"
     export_model = convert_from_dense(
         dense_from_original(load_original(args.src))).eval()
     export_model.fuse_temperature_()  # same fusion as export_onnx.py
@@ -349,13 +349,13 @@ def main() -> int:
     orig_onnx = (pathlib.Path(args.orig_onnx) if args.orig_onnx else
                  pathlib.Path(args.src).parent / (pathlib.Path(args.src).stem + ".onnx"))
     assert orig_onnx.exists(), f"original ONNX not found: {orig_onnx}"
-    grouped_default = REPO / "release" / "EdgeDepth-8-grouped" / "EdgeDepth-8-grouped.onnx"
+    grouped_default = REPO / "release" / "EdgeDepth-grouped" / "EdgeDepth-grouped.onnx"
     grouped_onnx = (pathlib.Path(args.grouped_onnx) if args.grouped_onnx
                     else grouped_default)
-    prered_default = REPO / "release" / "EdgeDepth-8-prered" / "EdgeDepth-8-prered.onnx"
+    prered_default = REPO / "release" / "EdgeDepth-prered" / "EdgeDepth-prered.onnx"
     prered_onnx = (pathlib.Path(args.prered_onnx) if args.prered_onnx
                    else prered_default)
-    dense_default = REPO / "release" / "EdgeDepth-8-dense" / "EdgeDepth-8-dense.onnx"
+    dense_default = REPO / "release" / "EdgeDepth-dense" / "EdgeDepth-dense.onnx"
     dense_onnx = (pathlib.Path(args.dense_onnx) if args.dense_onnx
                   else dense_default)
     h0, h4 = onnx_op_counts(orig_onnx), onnx_op_counts(onnx_path)
@@ -447,9 +447,9 @@ def main() -> int:
         f"| {stage} | {mac_rows[0][1].get(stage, 0) / 1e9:.3f} "
         f"| {mac_rows[1][1].get(stage, 0) / 1e9:.3f} |"
         for stage, _ in order)
-    card = f"""# EdgeDepth-8-dense24 (v1.0)
+    card = f"""# EdgeDepth (v1.0)
 
-Same math as EdgeDepth-8-dense (and EdgeDepth-8), repackaged so the Hailo-8
+Same math as EdgeDepth-dense (and EdgeDepth), repackaged so the Hailo-8
 dataflow compiler can split the graph into contexts. No retraining: weights
 are remapped, not relearned.
 
@@ -457,7 +457,7 @@ are remapped, not relearned.
 
 ## Why not dense
 
-EdgeDepth-8-dense (`DenseCorrCostVolume` in `src/model_dense.py`) calls
+EdgeDepth-dense (`DenseCorrCostVolume` in `src/model_dense.py`) calls
 `_shift_all` twice -- once on `reduce(right)` (sub path, G=8 ch) and once on
 `right` (corr path, C=32 ch) -- exporting 48 Slice layers, which the Hailo-8
 compiler cannot split into contexts. This model shifts only once.
@@ -549,8 +549,8 @@ dense 1x1s, concatenated once to the same 384-channel
 
 ## Files
 
-- `EdgeDepth-8-dense24.pt` (state_dict + arch + `"cost_layout": "dense24"` + source note)
-- `EdgeDepth-8-dense24.onnx` (opset 14, inputs `left`/`right`, output
+- `EdgeDepth.pt` (state_dict + arch + `"cost_layout": "dense24"` + source note)
+- `EdgeDepth.onnx` (opset 14, inputs `left`/`right`, output
   `disparity`, fixed {HEIGHT}x{WIDTH}, fused soft-argmin -- same export
   settings as `src/export_onnx.py`)
 """

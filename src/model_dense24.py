@@ -1,9 +1,9 @@
 """
-EdgeDepth-8-dense24 -- exact single-shift variant of EdgeDepth-8-dense.
+EdgeDepth -- exact single-shift variant of EdgeDepth-dense.
 
 Why this exists
 --------------
-The Hailo-8 compiler cannot split EdgeDepth-8-dense into contexts. The cause
+The Hailo-8 compiler cannot split EdgeDepth-dense into contexts. The cause
 is 48 Slice layers: ``_shift_all`` is called twice, once on ``reduce(right)``
 (sub path) and once on ``right`` (corr path). This module computes the SAME
 numbers with only ONE set of 24 shift slices.
@@ -71,7 +71,7 @@ __all__ = [
 class DenseSubCorrCostVolume(nn.Module):
     """Drop-in copy of DenseCorrCostVolume with a single 24-slice shift.
 
-    Only the ``"both"`` cost is supported -- the EdgeDepth-8 arch. Output
+    Only the ``"both"`` cost is supported -- the EdgeDepth arch. Output
     layout is ``torch.cat([sub, corr], 1)`` = ``[all sub (d-major) | all
     corr (d-major)]``, exactly like DenseCorrCostVolume, so the same
     stem input-channel permutation applies (and the stem weights are
@@ -112,7 +112,7 @@ class HailoStereoDense24(HailoStereo):
     """A HailoStereo whose cost volume is the single-shift
     :class:`DenseSubCorrCostVolume`.
 
-    Only ``cost="both"`` with ``refine="base"`` is supported -- the EdgeDepth-8
+    Only ``cost="both"`` with ``refine="base"`` is supported -- the EdgeDepth
     configuration. Everything else is inherited unchanged from HailoStereo.
     """
 

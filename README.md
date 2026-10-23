@@ -1,4 +1,4 @@
-# EdgeDepth-8-dense24
+# EdgeDepth
 
 Stereo disparity / depth network for edge deployment on a **Raspberry Pi 5 +
 Hailo-8 AI HAT+ (26 TOPS)**. Two rectified RGB images in (368×1232), one
@@ -9,7 +9,7 @@ disparity map out; depth = focal × baseline / disparity.
 | Parameters | ~0.91 M |
 | Matching | 24 disparity hypotheses at 1/8 resolution, group-wise (8 groups) sub + correlation cost |
 | Compute | 17.07 GMAC at 368×1232 |
-| HEF | `release/EdgeDepth-8-dense24/hailo8/EdgeDepth-8_hailo8.hef`, 23.16 MB, 7 contexts |
+| HEF | `release/EdgeDepth/hailo8/EdgeDepth_hailo8.hef`, 23.16 MB, 7 contexts |
 | On the Pi | **1.437 px EPE, D1 6.69%, 10.07 FPS** (KITTI 2015 val, official protocol) |
 
 ---
@@ -37,7 +37,7 @@ Raspberry Pi 5, Hailo-8 on PCIe Gen3 x1, 200-frame benchmark, batch 1.
 
 | Model | EPE | D1 | Depth MAE | AbsRel | δ<1.25 | Latency | FPS |
 |---|---|---|---|---|---|---|---|
-| **EdgeDepth-8-dense24** | **1.437 px** | **6.69%** | **1.131 m** | **0.0525** | **96.73%** | **99.4 ms** | **10.07** |
+| **EdgeDepth** | **1.437 px** | **6.69%** | **1.131 m** | **0.0525** | **96.73%** | **99.4 ms** | **10.07** |
 | Earlier EdgeDepth HEF | 1.687 px | 9.69% | 1.221 m | 0.0589 | 95.97% | 133.4 ms | 7.50 |
 | Hailo Model Zoo `stereonet` | 1.501 px | 10.21% | 1.274 m | 0.0540 | 95.42% | 192.9 ms | 5.19 |
 
@@ -87,12 +87,12 @@ cost both, feat_ch 32, n_res 6, agg_ch 64, refine base`:
 3. 2-D aggregation, then soft-argmin with BatchNorm before the softmax.
 4. Three refinement stages up to full resolution.
 
-**dense24** (`src/model_dense24.py`) is the same network and the same weights
+The deployed EdgeDepth (`src/model_dense24.py`) keeps the same network and weights,
 with the cost volume rewritten so the Hailo-8 compiler can split it into
 contexts: one shift of the right features (24 Slice ops instead of 48), one
 Sub, one Mul and two dense 1×1 convolutions. It is an exact rewrite (max
 difference 6.4e-4 px over the 40 val pairs), not a retrained model; see
-[`release/EdgeDepth-8-dense24/MODEL_CARD.md`](release/EdgeDepth-8-dense24/MODEL_CARD.md).
+[`release/EdgeDepth/MODEL_CARD.md`](release/EdgeDepth/MODEL_CARD.md).
 
 ### Training
 
@@ -115,13 +115,13 @@ scale augmentation 1.0–1.5 at p 0.5). Best epoch 58. Training record:
 ```bash
 python src/train.py --dataset sceneflow --root data/driving --epochs 30 --batch 16 --workers 8
 python src/train.py --dataset kitti_mixed --root <kitti_root> --init <sceneflow best.pt> --epochs 60 --lr 5e-5
-python src/eval_kitti.py --ckpt release/EdgeDepth-8-dense24/EdgeDepth-8-dense24.pt --root <kitti_root>
+python src/eval_kitti.py --ckpt release/EdgeDepth/EdgeDepth.pt --root <kitti_root>
 ```
 
-### Build dense24 from a trained checkpoint
+### Build EdgeDepth from a trained checkpoint
 
 ```bash
-python src/convert_dense24.py --src runs/kft_both_s60/best.pt --out-dir release/EdgeDepth-8-dense24
+python src/convert_dense24.py --src runs/kft_both_s60/best.pt --out-dir release/EdgeDepth
 python -m pytest src/test_dense24.py
 ```
 
@@ -131,7 +131,7 @@ Writes the `.pt`, the ONNX (opset 14, inputs `left`/`right`, output
 ### Compile to a Hailo-8 HEF (Linux, DFC 3.34)
 
 See [`deploy/README.md`](deploy/README.md) and
-[`release/EdgeDepth-8-dense24/hailo8/COMPILE_NOTES.md`](release/EdgeDepth-8-dense24/hailo8/COMPILE_NOTES.md).
+[`release/EdgeDepth/hailo8/COMPILE_NOTES.md`](release/EdgeDepth/hailo8/COMPILE_NOTES.md).
 
 ### Run on the Pi
 
@@ -142,16 +142,16 @@ See [`deploy/pi/README.md`](deploy/pi/README.md).
 ## Layout
 
 ```
-release/EdgeDepth-8-dense24/
-  EdgeDepth-8-dense24.pt / .onnx    weights + ONNX
+release/EdgeDepth/
+  EdgeDepth.pt / .onnx    weights + ONNX
   MODEL_CARD.md                     equivalence, op counts, MACs
-  hailo8/EdgeDepth-8_hailo8.hef     the Hailo-8 deliverable
+  hailo8/EdgeDepth_hailo8.hef     the Hailo-8 deliverable
   hailo8/emulator_results.json      fp / int8 emulator scores
   hailo8/COMPILE_NOTES.md           exact compile commands and logs
 src/
   model.py                          HailoStereo architecture
   model_grouped.py, model_prered.py,
-  model_dense.py                    cost-volume rewrites dense24 builds on
+  model_dense.py                    cost-volume rewrites EdgeDepth builds on
   model_dense24.py                  the deployed cost-volume layout
   convert_dense24.py, test_dense24.py
   train.py, data.py, eval_kitti.py, export_onnx.py

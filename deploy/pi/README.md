@@ -1,4 +1,4 @@
-# EdgeDepth-8-dense24 on the Raspberry Pi 5 + Hailo-8
+# EdgeDepth on the Raspberry Pi 5 + Hailo-8
 
 40 KITTI 2015 val pairs, scored with the same masks and pixel-pooled metrics
 as `deploy/dfc_flow.py` (`kitti_val_pairs`, `score`). The HEF takes RAW uint8
@@ -18,20 +18,20 @@ python deploy/pi/pack_val_pairs.py --out deploy/pi/kitti_val40.npz
 `run_hef.py` needs only numpy + `hailo_platform`, so it is copied standalone.
 
 ```bash
-scp release/EdgeDepth-8-dense24/hailo8/EdgeDepth-8_hailo8.hef \
+scp release/EdgeDepth/hailo8/EdgeDepth_hailo8.hef \
     deploy/pi/kitti_val40.npz deploy/pi/run_hef.py <user>@<pi>:~/edgedepth/
-ssh <user>@<pi> 'cd ~/edgedepth && python run_hef.py --hef EdgeDepth-8_hailo8.hef \
-    --pairs kitti_val40.npz --out pred_dense24.npz'
-scp <user>@<pi>:~/edgedepth/pred_dense24.npz deploy/pi/
+ssh <user>@<pi> 'cd ~/edgedepth && python run_hef.py --hef EdgeDepth_hailo8.hef \
+    --pairs kitti_val40.npz --out pred_edgedepth.npz'
+scp <user>@<pi>:~/edgedepth/pred_edgedepth.npz deploy/pi/
 ```
 
 ## 3. Score (host)
 
 ```bash
 python deploy/pi/score_preds.py --pairs deploy/pi/kitti_val40.npz \
-    --pred dense24=deploy/pi/pred_dense24.npz --out deploy/pi/dense24_results.json
+    --pred edgedepth=deploy/pi/pred_edgedepth.npz --out deploy/pi/edgedepth_results.json
 python deploy/pi/full_metrics.py --pairs deploy/pi/kitti_val40.npz \
-    --pred dense24=deploy/pi/pred_dense24.npz --out deploy/pi/full_metrics.json
+    --pred edgedepth=deploy/pi/pred_edgedepth.npz --out deploy/pi/full_metrics.json
 ```
 
 `full_metrics.py` adds disparity RMSE, depth MAE/RMSE, AbsRel, δ thresholds
@@ -41,15 +41,15 @@ and near/medium/far range bands.
 
 - `demo_kitti.py`: runs the HEF live on the Pi over the packed pairs and prints per-frame EPE / latency.
 - `demo_kitti_view.py`: same, with a disparity/depth view (`--pred-npz` replays saved predictions without the chip).
-- `viewer2/stereo_view.py`: host-side viewer for `kitti_val40.npz` + `pred_dense24.npz`.
+- `viewer2/stereo_view.py`: host-side viewer for `kitti_val40.npz` + `pred_edgedepth.npz`.
 
 ## Results
 
 | File | Contents |
 |---|---|
-| `dense24_results.json` | EPE / D1 (masked + official), per-image EPE, FPS |
+| `edgedepth_results.json` | EPE / D1 (masked + official), per-image EPE, FPS |
 | `full_metrics.json` | full disparity + depth metrics; also scores the earlier EdgeDepth HEF and Model Zoo `stereonet` for comparison |
-| `bench_dense24.json` | 200-frame latency breakdown (send / device / post), memory |
+| `bench_edgedepth.json` | 200-frame latency breakdown (send / device / post), memory |
 | `bench_shipped.json`, `bench_zoo.json` | the same benchmark for the two comparison models |
 | `figures/` | accuracy, latency/FPS, error vs. distance, accuracy vs. latency, utilization, latency distribution |
 | `pointclouds/` | Hailo-8 point clouds for KITTI frames 160, 173, 186 (`.ply` + `.png`) |

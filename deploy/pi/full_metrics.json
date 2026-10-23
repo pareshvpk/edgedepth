@@ -1,5 +1,5 @@
 {
-  "dense24": {
+  "EdgeDepth": {
     "N": 40,
     "mean_ms": 99.3364378249936,
     "fps": 10.066799473540156,
@@ -106,7 +106,7 @@
       },
       "beyond_80m_px": 1334
     },
-    "pred_file": "C:\\Microchip\\hailo-stereo\\deploy\\pi\\pred_dense24.npz"
+    "pred_file": "C:\\Microchip\\hailo-stereo\\deploy\\pi\\pred_edgedepth.npz"
   },
   "shipped": {
     "N": 40,

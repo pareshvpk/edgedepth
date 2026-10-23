@@ -1,5 +1,5 @@
 {
-  "EdgeDepth-8-dense24": {
+  "EdgeDepth": {
     "N": 40,
     "epe_masked": 1.3717882798451437,
     "d1_masked": 6.1733700336087844,
@@ -50,6 +50,6 @@
       1.324505090713501,
       1.1547520160675049
     ],
-    "pred_file": "C:\\Microchip\\hailo-stereo\\deploy\\pi\\pred_dense24.npz"
+    "pred_file": "C:\\Microchip\\hailo-stereo\\deploy\\pi\\pred_edgedepth.npz"
   }
 }

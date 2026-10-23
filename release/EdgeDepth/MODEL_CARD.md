@@ -1,6 +1,6 @@
-# EdgeDepth-8-dense24 (v1.0)
+# EdgeDepth (v1.0)
 
-Same math as EdgeDepth-8-dense (and EdgeDepth-8), repackaged so the Hailo-8
+Same math as the trained network (and its EdgeDepth-dense variant), repackaged so the Hailo-8
 dataflow compiler can split the graph into contexts. No retraining: weights
 are remapped, not relearned.
 
@@ -8,7 +8,7 @@ are remapped, not relearned.
 
 ## Why not dense
 
-EdgeDepth-8-dense (`DenseCorrCostVolume` in `src/model_dense.py`) calls
+EdgeDepth-dense (`DenseCorrCostVolume` in `src/model_dense.py`) calls
 `_shift_all` twice -- once on `reduce(right)` (sub path, G=8 ch) and once on
 `right` (corr path, C=32 ch) -- exporting 48 Slice layers, which the Hailo-8
 compiler cannot split into contexts. This model shifts only once.
@@ -55,19 +55,19 @@ by import; `src/model_dense.py` and `src/model.py` are never modified.)
 
 ## Accuracy: KITTI 2015 val (40 pairs), float
 
-| Protocol | dense EPE | dense24 EPE | dense D1-all | dense24 D1-all |
+| Protocol | dense EPE | EdgeDepth EPE | dense D1-all | EdgeDepth D1-all |
 |----------|--------------|-------------|-----------------|----------------|
 | official | 1.067 px | 1.067 px | 5.06% | 5.06% |
 | masked   | 0.987 px | 0.987 px | 4.53% | 4.53% |
 
-Dense24 matches dense to 3 decimals on both protocols
+EdgeDepth matches dense to 3 decimals on both protocols
 (expected: 0.987 masked / 1.067 official EPE).
 
 ## Op counts (ONNX node types)
 
-`EdgeDepth-8.onnx` vs `EdgeDepth-8-grouped.onnx` vs `EdgeDepth-8-prered.onnx` vs `EdgeDepth-8-dense.onnx` vs `EdgeDepth-8-dense24.onnx`:
+`EdgeDepth-original.onnx` vs `EdgeDepth-grouped.onnx` vs `EdgeDepth-prered.onnx` vs `EdgeDepth-dense.onnx` vs `EdgeDepth.onnx`:
 
-| op | original | grouped | prered | dense | dense24 |
+| op | original | grouped | prered | dense | EdgeDepth |
 |---|---|---|---|---|---|
 | Conv | 115 | 68 | 70 | 70 | 69 |
 | Sub | 24 | 1 | 1 | 1 | 1 |
@@ -76,7 +76,7 @@ Dense24 matches dense to 3 decimals on both protocols
 | Slice | 24 | 24 | 48 | 48 | 24 |
 | TOTAL nodes | 417 | 304 | 430 | 430 | 305 |
 
-The dense24 graph has exactly 24 Slice nodes (one `_shift_all`).
+The EdgeDepth graph has exactly 24 Slice nodes (one `_shift_all`).
 
 ## ONNX channel widths of the cost-volume tensors
 
@@ -86,21 +86,21 @@ Measured by ONNX shape inference at matching resolution
 `concat_out` = widest Concat tensor channels,
 `conv_in` = widest matching-resolution Conv input channels.
 
-| cost-volume tensor | original ch | grouped ch | prered ch | dense ch | dense24 ch |
+| cost-volume tensor | original ch | grouped ch | prered ch | dense ch | EdgeDepth ch |
 |---|---|---|---|---|---|
 | sub_in | 32 | 768 | 192 | 192 | 768 |
 | mul_in | 32 | 768 | 768 | 768 | 768 |
 | concat_out | 384 | 1536 | 768 | 768 | 768 |
 | conv_in | 384 | 1536 | 768 | 768 | 768 |
 
-Statically, the dense24 graph keeps the dense layout -- stacked 768-channel
+Statically, the EdgeDepth graph keeps the dense layout -- stacked 768-channel
 `big_left`/`big_right` tensors feeding one Sub and one Mul, then the two
 dense 1x1s, concatenated once to the same 384-channel
 `[sub 192 | corr 192]` cost volume the stem consumes.
 
 ## MACs (`model.count_ops`, 368x1232)
 
-| stage | dense GMAC | dense24 GMAC |
+| stage | dense GMAC | EdgeDepth GMAC |
 |---|---|---|
 | refine1 | 4.505 | 4.505 |
 | aggregation | 3.819 | 3.819 |
@@ -114,14 +114,14 @@ dense 1x1s, concatenated once to the same 384-channel
 
 ## Files
 
-- `EdgeDepth-8-dense24.pt` (state_dict + arch + `"cost_layout": "dense24"` + source note)
-- `EdgeDepth-8-dense24.onnx` (opset 14, inputs `left`/`right`, output
+- `EdgeDepth.pt` (state_dict + arch + `"cost_layout": "dense24"` + source note)
+- `EdgeDepth.onnx` (opset 14, inputs `left`/`right`, output
   `disparity`, fixed 368x1232, fused soft-argmin -- same export
   settings as `src/export_onnx.py`)
 
 ## Hailo-8 HEF
 
-- HEF: `hailo8/EdgeDepth-8_hailo8.hef` (23.16 MB, 7 contexts,
+- HEF: `hailo8/EdgeDepth_hailo8.hef` (23.16 MB, 7 contexts,
   sha256 `96fd7441b8a8193306f899b81c116831a8edd562c9e6f11d21f74c919f575069`)
 - int8 emulated (40 KITTI 2015 val pairs): EPE masked 1.240 / official 1.329,
   D1 official 6.32% (fp_optimized 0.987 / 1.067 / 5.06%)

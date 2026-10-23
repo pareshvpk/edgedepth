@@ -19,7 +19,7 @@ sys.path.insert(0, str(REPO / "src"))
 from pointcloud import Camera, build_cloud  # noqa: E402
 
 PAIRS = REPO / "deploy" / "pi" / "kitti_val40.npz"
-PRED = REPO / "deploy" / "pi" / "pred_dense24.npz"
+PRED = REPO / "deploy" / "pi" / "pred_edgedepth.npz"
 # Packed pairs are the 368x1232 bottom-right crop of 375x1242 KITTI frames; nominal KITTI calibration.
 CAM = Camera(f=721.5377, cx=609.5593, cy=172.854, baseline=0.54).for_input(375, 1242)[0]
 FB = CAM.f * CAM.baseline
@@ -209,7 +209,7 @@ class CloudWindow(QtWidgets.QWidget):
         self.xyz = np.stack([xyz[:, 0], xyz[:, 2], -xyz[:, 1]], axis=1)  # camera frame -> (X, forward, up)
         self.rgb = rgb
         self.title.setText(f"<b style='font-size:14px'>3D point cloud from stereo depth</b> &nbsp; "
-                           f"Hailo-8 (EdgeDepth-8) · KITTI {name} · left + right → disparity → 3D")
+                           f"Hailo-8 (EdgeDepth) · KITTI {name} · left + right → disparity → 3D")
         self.marker.setVisible(False)
         self.redraw()
 

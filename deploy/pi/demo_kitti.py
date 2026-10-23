@@ -86,7 +86,7 @@ class Hailo:
 
 def show_scene(name, pred, gt, ms, points):
     b, d0, c, g, y, dim = C["b"], C["0"], C["c"], C["g"], C["y"], C["dim"]
-    print(f"\n{b}{c}=== KITTI 2015 {name} | EdgeDepth-8 on Hailo-8 ==={d0}")
+    print(f"\n{b}{c}=== KITTI 2015 {name} | EdgeDepth on Hailo-8 ==={d0}")
     print(f"  Hailo-8 inference      {b}{ms:7.1f} ms{d0}  ({1000.0 / ms:.2f} FPS)")
     print(f"  Disparity map          {W}x{H} px, range {pred.min():.2f} - {pred.max():.2f} px, mean {pred.mean():.2f} px")
     valid = pred[:, 192:] >= 0.5
@@ -131,7 +131,7 @@ def show_scene(name, pred, gt, ms, points):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--hef", default="EdgeDepth-8_hailo8.hef")
+    ap.add_argument("--hef", default="EdgeDepth_hailo8.hef")
     ap.add_argument("--pairs", default="kitti_val40.npz")
     ap.add_argument("--scene", default="000173_10", help="scene name, index 0-39, or 'all'")
     ap.add_argument("--point", nargs=2, type=int, action="append", metavar=("U", "V"),

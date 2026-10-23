@@ -1,5 +1,5 @@
 """
-EdgeDepth-8-dense -- exact dense-1x1 copy of the EdgeDepth-8-prered matching path.
+EdgeDepth-dense -- exact dense-1x1 copy of the EdgeDepth-prered matching path.
 
 Why this exists
 --------------
@@ -81,7 +81,7 @@ def expand_grouped_to_dense(grouped_weight: torch.Tensor) -> torch.Tensor:
 class DenseCorrCostVolume(nn.Module):
     """Drop-in copy of PreReducedCostVolume with a dense corr 1x1.
 
-    Only the ``"both"`` cost is supported -- the EdgeDepth-8 arch. Output
+    Only the ``"both"`` cost is supported -- the EdgeDepth arch. Output
     layout is ``torch.cat([sub, corr], 1)`` = ``[all sub (d-major) | all
     corr (d-major)]``, exactly like PreReducedCostVolume, so the same
     stem input-channel permutation applies.
@@ -121,7 +121,7 @@ class DenseCorrCostVolume(nn.Module):
 class HailoStereoDense(HailoStereo):
     """A HailoStereo whose cost volume is the dense :class:`DenseCorrCostVolume`.
 
-    Only ``cost="both"`` with ``refine="base"`` is supported -- the EdgeDepth-8
+    Only ``cost="both"`` with ``refine="base"`` is supported -- the EdgeDepth
     configuration. Everything else is inherited unchanged from HailoStereo.
     """
 

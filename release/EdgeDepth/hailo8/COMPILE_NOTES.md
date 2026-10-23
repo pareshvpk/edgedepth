@@ -1,8 +1,8 @@
-# EdgeDepth-8-dense24 — Hailo-8 compile notes (2026-10-06)
+# EdgeDepth — Hailo-8 compile notes (2026-10-06)
 
 ## What the HEF is
 
-EdgeDepth-8 (s60 ep58, cost='both', float EPE masked 0.987 / official 1.067,
+EdgeDepth (s60 ep58, cost='both', float EPE masked 0.987 / official 1.067,
 D1 4.53% masked / 5.06% official on 40 KITTI 2015 val pairs).
 
 It is an exact rewrite of the cost volume, with the same weights and outputs
@@ -14,7 +14,7 @@ Target: Hailo-8 (Pi 5 AI HAT+ 26 TOPS), DFC 3.34 (venv `~/.venvs/hailo-dfc3`).
 
 `dfc_flow.py parse --opt-level 1` (checker_cfg disabled), then `optimize`
 (6 min), then `compile --compiler-effort 0 --no-width-split`.
-Build dir `deploy/build_hailo8_dense24_nws/`.
+Build dir `deploy/build_hailo8_edgedepth/`.
 
 Results: split into 7 contexts in about 3 min (partitioner: 183 iterations,
 3m 38s); mapping 8 min 10 s; kernels + HEF 24 s; total 8 min 49 s.
@@ -37,18 +37,18 @@ Log verbatim:
 [info] Bandwidth of inter context tensors: 594.906 Mbps (for a single frame)
 [info] Successful Mapping (allocation time: 8m 10s)
 [info] Successful Compilation (compilation time: 24s)
-  wrote deploy/build_hailo8_dense24_nws/EdgeDepth-8-dense24_hailo8_e0nws.hef (23.16 MB) in 520s
+  wrote deploy/build_hailo8_edgedepth/EdgeDepth_hailo8_e0nws.hef (23.16 MB) in 520s
 ```
 
 Exact commands:
 
 ```
 export HAILO_VENV=$HOME/.venvs/hailo-dfc3
-COMMON="--hw-arch hailo8 --onnx release/EdgeDepth-8-dense24/EdgeDepth-8-dense24.onnx --build-dir <B> --float-ref 0.987,1.067,4.53"
+COMMON="--hw-arch hailo8 --onnx release/EdgeDepth/EdgeDepth.onnx --build-dir <B> --float-ref 0.987,1.067,4.53"
 ./deploy/hailo-py deploy/dfc_flow.py parse $COMMON --opt-level 1
 echo "model_optimization_config(checker_cfg, policy=disabled)" >> <B>/hailo_stereo.resolved.alls
 ./deploy/hailo-py deploy/dfc_flow.py optimize $COMMON
-./deploy/hailo-py deploy/dfc_flow.py compile $COMMON --compiler-effort 0 --no-width-split --hef <B>/EdgeDepth-8-dense24_hailo8_e0nws.hef
+./deploy/hailo-py deploy/dfc_flow.py compile $COMMON --compiler-effort 0 --no-width-split --hef <B>/EdgeDepth_hailo8_e0nws.hef
 ```
 
 (Run long DFC steps under `script -q -c "..." /dev/null > log` so the output
@@ -61,7 +61,7 @@ flushes live. Keep the laptop plugged in.)
 | fp_optimized | 0.987 | 1.067 | 5.06% |
 | quantized (int8) | **1.240** | **1.329** | **6.32%** (+0.253 px masked) |
 
-For reference, EdgeDepth-8 original at opt-level 2: 1.196 / 1.282.
+For reference, EdgeDepth original layout at opt-level 2: 1.196 / 1.282.
 Shipped model int8: 1.333 / 1.430; on the Pi: 1.613 / 1.687 @ 3.95 FPS.
 opt-level 1 was used because the opt-level 2 QFT ran out of memory on these graphs.
 
@@ -83,18 +83,18 @@ add_output_shape='[-1, 92, 308, 32]', conv_output_shape=[-1, 92, 308, 3]
 
 | variant | change | result |
 |---|---|---|
-| EdgeDepth-8 original (254 Hailo layers) | none | e0 + no-width-split: context 6 hit the 1 h watchdog (09-25) |
-| EdgeDepth-8-grouped (164 layers) | 24 branches fused into one grouped 1x1 conv | partitioned in 5 min; context 2 (grouped conv) failed mapping |
-| EdgeDepth-8-prered (217 layers, 48 Slice) | reduce before shift | never partitioned (6 h 51 min, on battery) |
-| EdgeDepth-8-dense (48 Slice) | prered + dense block-diagonal corr conv | never partitioned: 45 min (09-26); 2 h 06 min, 1,495 rejected partitions (10-06) |
-| **EdgeDepth-8-dense24 (24 Slice, 305 ONNX nodes)** | shift once; sub = dense conv(big_left - big_right) | e0: 7 contexts in 7.5 min, but context 3 hit the 1 h watchdog; **e0 + --no-width-split: HEF in 8 min 49 s** |
+| EdgeDepth original layout (254 Hailo layers) | none | e0 + no-width-split: context 6 hit the 1 h watchdog (09-25) |
+| EdgeDepth-grouped (164 layers) | 24 branches fused into one grouped 1x1 conv | partitioned in 5 min; context 2 (grouped conv) failed mapping |
+| EdgeDepth-prered (217 layers, 48 Slice) | reduce before shift | never partitioned (6 h 51 min, on battery) |
+| EdgeDepth-dense (48 Slice) | prered + dense block-diagonal corr conv | never partitioned: 45 min (09-26); 2 h 06 min, 1,495 rejected partitions (10-06) |
+| **EdgeDepth (24 Slice, 305 ONNX nodes)** | shift once; sub = dense conv(big_left - big_right) | e0: 7 contexts in 7.5 min, but context 3 hit the 1 h watchdog; **e0 + --no-width-split: HEF in 8 min 49 s** |
 
 Root cause: Hailo-8 runs each context as a spatial pipeline. A cost volume with
 48 parallel shift slices needs too many resources and inter-context tensors, so
 the rejected partitions were "too many resources", "initial utilization
 overflow" and "too many inputs/outputs".
 
-dense24 identity: reduce has no bias and the shift pads with zeros, so
+EdgeDepth identity: reduce has no bias and the shift pads with zeros, so
 shift(reduce(R)) == reduce(shift(R)) and reduce(L)-reduce(R_d) == reduce(L-R_d).
 17.07 GMAC (dense 16.03, original 14.99).
 
@@ -219,8 +219,8 @@ An on-device test on the Pi 5 (deploy/pi/: run_hef.py, score_preds.py;
 
 ## Files in this folder
 
-- `EdgeDepth-8_hailo8.hef` — copy of
-  `deploy/build_hailo8_dense24_nws/EdgeDepth-8-dense24_hailo8_e0nws.hef`
+- `EdgeDepth_hailo8.hef` — copy of
+  `deploy/build_hailo8_edgedepth/EdgeDepth_hailo8_e0nws.hef`
   (sha256 `96fd7441b8a8193306f899b81c116831a8edd562c9e6f11d21f74c919f575069`)
 - `emulator_results.json` — copy of the int8 emulation scores
 - `hailo_stereo.resolved.alls` — parse + optimization script used

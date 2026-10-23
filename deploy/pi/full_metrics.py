@@ -7,7 +7,7 @@ Non-finite prediction pixels are excluded from every mask and counted.
 
 Usage:
     python deploy/pi/full_metrics.py --pairs deploy/pi/kitti_val40.npz \\
-        --pred dense24=deploy/pi/pred_dense24.npz [--pred zoo=...] \\
+        --pred edgedepth=deploy/pi/pred_edgedepth.npz [--pred zoo=...] \\
         [--out deploy/pi/full_metrics.json]
 """
 

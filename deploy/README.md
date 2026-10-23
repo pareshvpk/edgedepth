@@ -1,8 +1,8 @@
-# Compiling EdgeDepth-8-dense24 to a Hailo-8 HEF
+# Compiling EdgeDepth to a Hailo-8 HEF
 
-The shipped HEF is `release/EdgeDepth-8-dense24/hailo8/EdgeDepth-8_hailo8.hef`.
+The shipped HEF is `release/EdgeDepth/hailo8/EdgeDepth_hailo8.hef`.
 The build log, bandwidth figures and emulator scores are in
-[`../release/EdgeDepth-8-dense24/hailo8/COMPILE_NOTES.md`](../release/EdgeDepth-8-dense24/hailo8/COMPILE_NOTES.md).
+[`../release/EdgeDepth/hailo8/COMPILE_NOTES.md`](../release/EdgeDepth/hailo8/COMPILE_NOTES.md).
 
 ## Toolchain
 
@@ -21,14 +21,14 @@ The build log, bandwidth figures and emulator scores are in
 
 ```bash
 export HAILO_VENV=$HOME/.venvs/hailo-dfc3
-B=deploy/build_hailo8_dense24_nws
-COMMON="--hw-arch hailo8 --onnx release/EdgeDepth-8-dense24/EdgeDepth-8-dense24.onnx --build-dir $B --float-ref 0.987,1.067,4.53"
+B=deploy/build_hailo8_edgedepth
+COMMON="--hw-arch hailo8 --onnx release/EdgeDepth/EdgeDepth.onnx --build-dir $B --float-ref 0.987,1.067,4.53"
 ./deploy/hailo-py deploy/dfc_flow.py parse $COMMON --opt-level 1
 echo "model_optimization_config(checker_cfg, policy=disabled)" >> $B/hailo_stereo.resolved.alls
 ./deploy/hailo-py deploy/dfc_flow.py optimize $COMMON
 ./deploy/hailo-py deploy/dfc_flow.py emulate  $COMMON
 ./deploy/hailo-py deploy/dfc_flow.py compile  $COMMON --compiler-effort 0 --no-width-split \
-    --hef $B/EdgeDepth-8-dense24_hailo8_e0nws.hef
+    --hef $B/EdgeDepth_hailo8_e0nws.hef
 ```
 
 Compiling takes about 9 minutes on the laptop and produces 7 contexts and a 23.16 MB HEF.

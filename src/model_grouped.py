@@ -1,5 +1,5 @@
 """
-EdgeDepth-8-grouped -- a mathematically identical copy of the EdgeDepth-8
+EdgeDepth-grouped -- a mathematically identical copy of the EdgeDepth
 matching path with the 24-branch cost volume fused into wide grouped layers.
 
 Why this exists
@@ -52,7 +52,7 @@ from model import HailoStereo, _shift_all, NUM_DISP  # noqa: E402
 class GroupedCostVolume(nn.Module):
     """Wide-layer equivalent of ``CostVolume(ch, num_disp, groups, cost="both")``.
 
-    Only the ``"both"`` cost is supported -- that is the EdgeDepth-8 arch, and
+    Only the ``"both"`` cost is supported -- that is the EdgeDepth arch, and
     the fused layout (sub half followed by corr half) is specific to it.
     """
 
@@ -88,7 +88,7 @@ class GroupedCostVolume(nn.Module):
 class HailoStereoGrouped(HailoStereo):
     """A HailoStereo whose cost volume is the fused :class:`GroupedCostVolume`.
 
-    Only ``cost="both"`` with ``refine="base"`` is supported -- the EdgeDepth-8
+    Only ``cost="both"`` with ``refine="base"`` is supported -- the EdgeDepth
     configuration. Everything else (features, aggregation, soft-argmin,
     refinement ladder) is inherited unchanged from :class:`HailoStereo`.
     """
@@ -204,7 +204,7 @@ def strip_module_prefix(state: dict) -> dict:
 def load_original(ckpt_path: str) -> HailoStereo:
     """Load a source checkpoint the way src/eval_kitti.py does (``blob.get(
     "model", blob)``), tolerating a ``module.`` prefix, and return an eval
-    model. Raises if the arch is not the supported EdgeDepth-8 one."""
+    model. Raises if the arch is not the supported EdgeDepth one."""
     from model import build_model  # noqa: E402  (local import: keep module import light)
 
     blob = torch.load(ckpt_path, map_location="cpu", weights_only=False)
