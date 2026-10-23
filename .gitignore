@@ -37,3 +37,7 @@ deploy/build_*/
 /report.md
 notes/_scratch/
 deploy/pi/*.npz
+
+# Local-only Pi tooling (prebuilt viewer exe, viewer venv)
+deploy/pi/viewer/
+deploy/pi/viewer2/env/

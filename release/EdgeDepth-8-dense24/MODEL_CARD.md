@@ -4,7 +4,7 @@ Same math as EdgeDepth-8-dense (and EdgeDepth-8), repackaged so the Hailo-8
 dataflow compiler can split the graph into contexts. No retraining: weights
 are remapped, not relearned.
 
-**Source:** `release/EdgeDepth-8/EdgeDepth-8.pt` (arch: {'num_disp': 24, 'groups': 8, 'match_ch': 32, 'cost': 'both', 'feat_ch': 32, 'n_res': 6, 'agg_ch': 64, 'refine': 'base'})
+**Source:** `runs/kft_both_s60/best.pt`, epoch 58 (arch: {'num_disp': 24, 'groups': 8, 'match_ch': 32, 'cost': 'both', 'feat_ch': 32, 'n_res': 6, 'agg_ch': 64, 'refine': 'base'})
 
 ## Why not dense
 

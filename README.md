@@ -1,269 +1,171 @@
-# HailoStereo
+# EdgeDepth-8-dense24
 
-A ground-up replacement for the Hailo Model Zoo `stereonet` entry, targeting **Hailo-15H**.
+Stereo disparity / depth network for edge deployment on a **Raspberry Pi 5 +
+Hailo-8 AI HAT+ (26 TOPS)**. Two rectified RGB images in (368×1232), one
+disparity map out; depth = focal × baseline / disparity.
 
-**Status:** trained, exported, quantized, compiled to HEF. Blocked only on
-on-device validation — no Hailo board on this machine.
-
-The original was reverse-engineered first — full writeup in
-[report/teardown.html](report/teardown.html). Headline finding: its cost
-volume pads by `d` then slices `[:W]` instead of `[d:d+W]`, so all **12
-disparity hypotheses are bit-identical**. It performs no stereo matching —
-its real EPE is **1.30 px**, achieved by learning a left-to-right brightness
-gradient, which most road scenes already are. (Hailo's `stereonet.yaml`
-labels its published **8.223** as `eval_metric: EPE`, but running the
-original ONNX ourselves under the official protocol gives EPE 1.300 px and
-D1 8.119% — the published figure is the D1 outlier rate, not EPE. Every EPE
-comparison below is against the real 1.30 px, never the mislabeled 8.22.)
-Every design decision below traces back to a defect ID from that report.
+| | |
+|---|---|
+| Parameters | ~0.91 M |
+| Matching | 24 disparity hypotheses at 1/8 resolution, group-wise (8 groups) sub + correlation cost |
+| Compute | 17.07 GMAC at 368×1232 |
+| HEF | `release/EdgeDepth-8-dense24/hailo8/EdgeDepth-8_hailo8.hef`, 23.16 MB, 7 contexts |
+| On the Pi | **1.437 px EPE, D1 6.69%, 10.07 FPS** (KITTI 2015 val, official protocol) |
 
 ---
 
-## 1 · The headline numbers
+## 1 · Results
 
-![Model Zoo stereonet vs HailoStereo — D1 outlier rate, compute, HEF size](report/charts/headline_comparison.png)
+All numbers are on the same 40 KITTI 2015 validation pairs. *Official* scores
+every pixel with ground truth; *masked* excludes the unmatchable left border.
 
-The first panel plots **D1 outlier rate**, not EPE — Hailo's published 8.223
-/ 10.4 are D1%, not EPE (see above), so D1 is the only metric Hailo's own
-numbers can be honestly plotted against. On that basis HailoStereo is a
-real but modest 1.20× (float) / 1.30× (int8) better. The **EPE** comparison,
-both sides measured here under the identical protocol, is **1.248 px vs the
-original's 1.300 px** — a genuine but small 1.04× gain; the structural case
-below (real vs. fake disparity search, compute, size) is what this project
-actually rests on, not the accuracy delta. Compute is 3.9× lower with
-*twice* the disparity hypotheses (24 vs 12), and the softmax is 32×
-narrower despite having 2× the channels. The int8 figures are on different
-footing — Model Zoo's is on-device, HailoStereo's is DFC-emulated — but the
-emulator reproduces PyTorch to three decimals (§4), so the gap is unlikely
-to be an artefact.
+### Computer → emulator → Pi
 
-### Architecture
+| Stage | Where | EPE official | D1 official | EPE masked | D1 masked |
+|---|---|---|---|---|---|
+| Float (PyTorch / ONNX) | laptop, RTX 4060 | **1.067 px** | 5.06% | 0.987 px | 4.53% |
+| int8, Hailo emulator | laptop, DFC 3.34 | 1.329 px | 6.32% | 1.240 px | 5.68% |
+| int8, Hailo-8 hardware | Pi 5 + Hailo-8, HailoRT 4.23.0 | **1.437 px** | 6.69% | 1.372 px | 6.17% |
 
-![Pipeline: left/right image through feature extraction, cost volume, soft-argmin, refinement, to disparity map](report/charts/architecture.png)
+The ONNX export matches PyTorch to 6.0e-4 px. Quantization costs +0.26 px;
+the device adds a further +0.11 px over emulation, mostly because the HEF
+outputs uint8 disparity (241 levels of 0.651 px).
 
-The cost head's final **BatchNorm is load-bearing**. Remove it and the
-softmax saturates (entropy 0.007 of a possible 3.18), matching stops
-learning, and the model locks onto whatever hypothesis it picked first —
-three seeds gave EPE 29.19 / 8.55 / 7.41. With it: entropy 2.56–2.84, EPE
-7.47 / 7.22 / 7.82. Folds into the convolution at export, free on device.
-Same defect class as NUM-1 in the original — an unscaled softmax — arrived
-at from the other direction.
+### On the Pi, against the alternatives
 
-### Structural scorecard
+Raspberry Pi 5, Hailo-8 on PCIe Gen3 x1, 200-frame benchmark, batch 1.
 
-| | Model Zoo `stereonet` | HailoStereo |
-|---|---|---|
-| Disparity hypotheses | 12 (all identical) | **24 (all distinct)** |
-| 3D convolutions | 5 | **0** |
-| Softmax width | 5,441,536 elements | **170,016** |
-| Largest constant | 21.76 MB (index ramp) | **0.442 MB** |
-| Parameters | 423,586 | 796,531 |
-| ONNX size | 23.69 MB | **3.38 MB** |
-| **Matching actually works** | **no** | **yes** — verified geometrically |
+| Model | EPE | D1 | Depth MAE | AbsRel | δ<1.25 | Latency | FPS |
+|---|---|---|---|---|---|---|---|
+| **EdgeDepth-8-dense24** | **1.437 px** | **6.69%** | **1.131 m** | **0.0525** | **96.73%** | **99.4 ms** | **10.07** |
+| Earlier EdgeDepth HEF | 1.687 px | 9.69% | 1.221 m | 0.0589 | 95.97% | 133.4 ms | 7.50 |
+| Hailo Model Zoo `stereonet` | 1.501 px | 10.21% | 1.274 m | 0.0540 | 95.42% | 192.9 ms | 5.19 |
 
----
+![Accuracy](deploy/pi/figures/graph1_accuracy.png)
+![Latency and FPS](deploy/pi/figures/graph2_latency_fps.png)
 
-## 2 · Accuracy that survives two checks
+More figures in [`deploy/pi/figures/`](deploy/pi/figures/): error vs.
+distance, accuracy vs. latency, resource utilization, latency distribution.
 
-Training masks two regions from the loss: GT beyond 192 px, and the left
-`max_disp` columns, whose matches lie outside the right image. Excluding
-them from the *loss* is correct; excluding them from the *reported metric*
-is a different claim — this project made that mistake once and fixed it.
+### Accuracy by range (Pi, masked)
 
-![13% of the frame carried 84% of the error — border region EPE before and after weak supervision](report/charts/border_fix.png)
+| Range | Pixels | EPE | D1 | Depth MAE |
+|---|---|---|---|---|
+| 0–20 m | 2.68 M | 1.419 px | 6.25% | 0.42 m |
+| 20–40 m | 0.50 M | 1.178 px | 6.02% | 2.57 m |
+| 40–80 m | 0.17 M | 1.197 px | 5.44% | 7.75 m |
 
-The border re-entered the loss at reduced weight rather than staying
-unsupervised, cutting its error 16× for a 3.5% cost in the matched region.
-`src/eval_kitti.py` reports both protocols in one pass; always quote the
-**official** one (1.248 px) against a published baseline, not the masked
-number training optimises (1.156 px).
+Disparity error is flat with range, so depth error grows with distance². At
+40 m one uint8 output step alone is ~2.9 m of depth.
 
-![Accuracy sits at the geometric floor from 5 to 40 metres, banded by distance](report/charts/distance_band_accuracy.png)
+### Point clouds
 
-One pixel of disparity error is 6 cm at 5 m and 6.5 m at 50 m — a 100×
-difference a single headline EPE hides. "Geometric floor" is the metre error
-each band's *own* pixel error implies; 5–40 m sits at it, so sensor geometry
-— not the model — is the limit there. 0–5 m is still the weakest band (was
-never limited by the 192 px ceiling; the real cause was under-represented
-large disparities, since improved with KITTI 2012). Known unscored gap:
-above the horizon the model drifts toward "sky is near" — no LiDAR reaches
-there to supervise or measure it either.
+Hailo-8 output for three KITTI frames, in [`deploy/pi/pointclouds/`](deploy/pi/pointclouds/)
+(`.ply` + rendered `.png`).
 
-**A methodology note worth keeping:** every checkpoint before
-`sceneflow_holdout` validated on the last 2% of an index-sorted frame list —
-adjacent frames of the *same* continuous SceneFlow fly-through in both train
-and val. That leak was worth **42%** (2.596 px leaky vs 3.687 px on a
-scene-disjoint hold-out) and required a full retrain to fix, since re-scoring
-would have leaked through the weights instead of the split.
+![Point cloud](deploy/pi/pointclouds/000160_10_pointcloud.png)
+
+### Throughput notes
+
+- Device time is 99.0 ms of the 99.4 ms end to end; host send + post-processing is ~1.2 ms.
+- Hailo-8 has no DRAM, so the 7 contexts pass ~595 Mbit/frame of
+  inter-context tensors through host memory. Throughput is **PCIe-bound**
+  (compute units are 22–30% busy). Use `dtparam=pciex1_gen=3` in the Pi's
+  `config.txt`; Gen2 roughly halves FPS.
+- Resident memory on the Pi during inference: ~208 MiB.
 
 ---
 
-## 3 · Deployment
+## 2 · The model
 
-`artifacts/hailo_stereo_hailo15h.hef` — **4.12 MB, 7 contexts, 5 m 52 s**,
-built with `performance_param(compiler_optimization_level=0)`.
+`src/model.py` (`HailoStereo`), arch `num_disp 24, groups 8, match_ch 32,
+cost both, feat_ch 32, n_res 6, agg_ch 64, refine base`:
 
-| context | EPE masked | EPE official | D1 official |
-|---|---|---|---|
-| torch float (reference) | 1.156 px | 1.248 px | 6.87% |
-| `SDK_NATIVE` | **1.156 px** | **1.248 px** | **6.87%** |
-| `SDK_FP_OPTIMIZED` | **1.156 px** | **1.248 px** | **6.87%** |
-| `SDK_QUANTIZED` (int8) | 1.333 px | 1.430 px | 8.00% |
+1. Shared feature extractor to 1/8 resolution.
+2. Cost volume over 24 disparities: group-wise difference (`sub`) and
+   group-wise correlation (`corr`), concatenated to 384 channels.
+3. 2-D aggregation, then soft-argmin with BatchNorm before the softmax.
+4. Three refinement stages up to full resolution.
 
-Both float contexts reproduce PyTorch **exactly** — the ONNX translation,
-on-chip normalization, and NHWC layout are all correct before quantization
-is even considered. int8 costs +14.5% official against the +24.6%
-`quantize_sim.py` predicted: DFC 5.4.0 runs quantization-aware fine-tuning
-at `optimization_level=2`, not the equalization/bias-correction the
-simulation modelled.
+**dense24** (`src/model_dense24.py`) is the same network and the same weights
+with the cost volume rewritten so the Hailo-8 compiler can split it into
+contexts: one shift of the right features (24 Slice ops instead of 48), one
+Sub, one Mul and two dense 1×1 convolutions. It is an exact rewrite (max
+difference 6.4e-4 px over the 40 val pairs), not a retrained model; see
+[`release/EdgeDepth-8-dense24/MODEL_CARD.md`](release/EdgeDepth-8-dense24/MODEL_CARD.md).
 
-![One layer causes most of the identifiable int8 loss — per-layer sensitivity ranking](report/charts/quantization_sensitivity.png)
+### Training
 
-`soft_argmin.index`'s weights *are* the disparity indices `[0..23]`, so int8
-rounding there is a direct metric error, not a feature perturbation — hence
-the 16-bit promotion in `deploy/hailo_stereo.alls`. Per-layer deltas sum to
-~0.05 px against the 0.36 px the full graph loses in simulation, so most of
-the damage is cumulative; promoting the top layer helps but doesn't close
-the gap alone (QAT did, in the event).
-
-**Known DFC 5.4.0 bug, not a model defect:** `hailo profiler` crashes on
-this HEF (`conv_output_shape` mismatch from spatial-defusing a residual
-add). Every allocation this graph admits gets defused the same way, so FPS
-is currently unmeasurable with this toolchain — needs on-device timing via
-HailoRT instead. The higher-density `max_utilization=0.95` build that
-shipped first (4.69 MB, 5 contexts) stopped completing on 2026-09-16 (three
-runs of 41–88 min stalled on `shmifo capacity exceeded`); kept at
-`artifacts/shipped/` for reference.
+SceneFlow Driving pretrain → KITTI 2015 + 2012 mixed fine-tune (354 frames,
+60 epochs, lr 5e-5, batch 4, crop 320×768, strong augmentation, EMA 0.999,
+scale augmentation 1.0–1.5 at p 0.5). Best epoch 58. Training record:
+`runs/kft_both_s60/best.json`, `runs/kft_both_s60_train.log`.
 
 ---
 
-## 4 · Verification
+## 3 · Reproduce
 
-| check | command | result |
-|---|---|---|
-| Geometry | `test_disparity.py` | **6/6 pass** — the test the original model fails |
-| Ingest | `check_ingest.py` | **PASS** — warping 3.61× better than not warping |
-| Synthetic learning | `test_learns.py --steps 2000` | EPE **28.10 → 2.88 px** |
-| ONNX structural audit | `export_onnx.py` | **all PASS**, fails closed on any unresolved value |
-| ONNX/PyTorch parity | same | **8.4e-04 px** |
-| Depth cross-check | `eval_depth.py` | reproduces `eval_kitti.py` to the pixel |
-| DFC harness | `deploy/dfc_flow.py` | reproduces `eval_kitti.py` exactly, pre-compile |
+### Data
 
-The parity check exists because the audit is structural, not semantic:
-`fuse_temperature_()` rewrites the cost head's BatchNorm scale by `−t`, and a
-sign error there yields a graph that passes every structural check while
-computing the **argmax** of the cost volume — the worst match instead of the
-best.
+- **SceneFlow Driving**: `python src/fetch_driving.py --root data/driving` (resumable, ~3.1 GB).
+- **KITTI 2015 + 2012**: manual download, [registration required](http://www.cvlibs.net/datasets/kitti/) (CC BY-NC-SA, non-commercial).
 
----
-
-## 5 · Reproduce every number here
-
-Fastest first; each command prints its own pass/fail. All prefixed
-`.venv/Scripts/python.exe src/<file>` on Windows, or the Linux venv in
-[Environment](#environment).
-
-| step | command | expect |
-|---|---|---|
-| Geometry | `test_disparity.py` | 6/6 pass |
-| Ingest | `check_ingest.py --dataset kitti --root data/kitti2015/training` | PASS, ×1.0 optimum |
-| Accuracy | `eval_kitti.py --ckpt runs/kitti_mixed_fixed768/best.pt --root data/kitti2015/training --bins` | 1.156 masked / 1.248 official px |
-| Depth by range | `eval_depth.py --ckpt runs/kitti_mixed_fixed768/best.pt --root data/kitti2015/training` | banded table, §2 |
-| Visual check | `preview.py --ckpt runs/kitti_mixed_fixed768/best.pt --dataset kitti --root data/kitti2015/training --n 4 --out artifacts/preview_kitti.png` | shared colour-scale PNG |
-| ONNX export + audit | `export_onnx.py --ckpt runs/kitti_mixed_fixed768/best.pt` | 6/6 audits PASS, parity ~1e-4 px |
-| Quantization estimate | `quantize_sim.py --ckpt runs/kitti_mixed_fixed768/best.pt --dataset kitti --root data/kitti2015/training --val-limit 40 --calib 24` | +24.2% (add `--sensitivity` for the ranking) |
-| Interactive inspector | `demo_server.py --ckpt runs/kitti_mixed_fixed768/best.pt` → `localhost:8000` | 13-panel stage breakdown |
-
-Deploy pipeline (Linux only — DFC is not available on Windows):
+### Train and evaluate (computer)
 
 ```bash
-./deploy/hailo-py deploy/dfc_flow.py parse       # → build/hailo_stereo.har
-./deploy/hailo-py deploy/dfc_flow.py optimize    # QAT fine-tune, ~6 min
-./deploy/hailo-py deploy/dfc_flow.py emulate     # fp_optimized + quantized
-./deploy/hailo-py deploy/dfc_flow.py compile --compiler-effort 0   # → 4.12 MB HEF
-```
-
-Not `dfc_flow.py all` or bare `compile` — both default to `--max-util 0.95`,
-which no longer completes (§3).
-
-The **demo inspector** is the fastest way to see the defect fixed: four
-`P(disparity = 0/64/128/184 px)` panels that, in the original, would all be
-identical copies. Here they light up different surfaces at different depths.
-
----
-
-## Data & training
-
-- **SceneFlow Driving** — `src/fetch_driving.py --root data/driving`, resumable, 4,400 pairs (~3.1 GB).
-- **KITTI 2015 + 2012** — manual download, [registration required](http://www.cvlibs.net/datasets/kitti/) (CC BY-NC-SA, non-commercial), ~2 GB each, 200 + 194 pairs.
-
-```bash
-# Pretrain
 python src/train.py --dataset sceneflow --root data/driving --epochs 30 --batch 16 --workers 8
-
-# Finetune (KITTI 2015 + 2012 combined)
-python src/train.py --dataset kitti_mixed --root <kitti_root> \
-    --init runs/sceneflow_fixed/best.pt --epochs 300 --lr 1e-4
-
-# Resume an interrupted run
-python src/train.py --dataset sceneflow --root data/driving \
-    --resume runs/sceneflow_full/last.pt --epochs 30 --batch 16
+python src/train.py --dataset kitti_mixed --root <kitti_root> --init <sceneflow best.pt> --epochs 60 --lr 5e-5
+python src/eval_kitti.py --ckpt release/EdgeDepth-8-dense24/EdgeDepth-8-dense24.pt --root <kitti_root>
 ```
 
-- `--init` loads **strictly** — the original used `strict=False` and silently
-  left mismatched tensors random (defect EXP-1).
-- `--resume` restores optimizer/LR-schedule/AMP state; `--init` starts a new
-  schedule from pretrained weights.
-- ~100 W draw on this laptop, net-discharging even on mains; a full
-  pretrain+finetune cycle is 150–200 Wh. Batch 16 / 8 workers saturates
-  throughput (~96 pairs/s, ~60 s/epoch on Driving).
+### Build dense24 from a trained checkpoint
+
+```bash
+python src/convert_dense24.py --src runs/kft_both_s60/best.pt --out-dir release/EdgeDepth-8-dense24
+python -m pytest src/test_dense24.py
+```
+
+Writes the `.pt`, the ONNX (opset 14, inputs `left`/`right`, output
+`disparity`, fixed 368×1232) and the model card, after checking equivalence.
+
+### Compile to a Hailo-8 HEF (Linux, DFC 3.34)
+
+See [`deploy/README.md`](deploy/README.md) and
+[`release/EdgeDepth-8-dense24/hailo8/COMPILE_NOTES.md`](release/EdgeDepth-8-dense24/hailo8/COMPILE_NOTES.md).
+
+### Run on the Pi
+
+See [`deploy/pi/README.md`](deploy/pi/README.md).
 
 ---
 
 ## Layout
 
 ```
-src/model.py           the architecture
-src/data.py             SceneFlow + KITTI 2015/2012 loaders, masked validity
-src/train.py            deep supervision, masked loss, strict --init
-src/eval_kitti.py       accuracy under both protocols
-src/eval_depth.py       accuracy in metres, banded by range
-src/eval_sceneflow.py   SceneFlow hold-out EPE (forgetting metric)
-src/export_onnx.py      ONNX export + defect audit + parity check
-src/quantize_sim.py     int8 simulation and per-layer sensitivity
-src/preview.py          predictions beside ground truth, shared colour scale
-src/demo_server.py      stage-by-stage inspector (stdlib only)
-src/make_calib.py       calibration set for the Hailo compiler
-notes/make_readme_charts.py   regenerates the charts embedded above
-deploy/dfc_flow.py      parse → optimize → emulate → compile → profile
-deploy/hailo-py         PYTHONPATH-sanitising wrapper for the DFC
-report/teardown.html    reverse-engineering report on the original
-notes/                  the analysis scripts behind the teardown
-artifacts/hailo_stereo_hailo15h.hef   4.12 MB, 7 contexts  ← the deliverable
-runs/kitti_mixed_fixed768/best.pt     the shipped checkpoint
+release/EdgeDepth-8-dense24/
+  EdgeDepth-8-dense24.pt / .onnx    weights + ONNX
+  MODEL_CARD.md                     equivalence, op counts, MACs
+  hailo8/EdgeDepth-8_hailo8.hef     the Hailo-8 deliverable
+  hailo8/emulator_results.json      fp / int8 emulator scores
+  hailo8/COMPILE_NOTES.md           exact compile commands and logs
+src/
+  model.py                          HailoStereo architecture
+  model_grouped.py, model_prered.py,
+  model_dense.py                    cost-volume rewrites dense24 builds on
+  model_dense24.py                  the deployed cost-volume layout
+  convert_dense24.py, test_dense24.py
+  train.py, data.py, eval_kitti.py, export_onnx.py
+  make_calib.py                     KITTI calibration set for the compiler
+  pointcloud.py, fetch_driving.py
+deploy/
+  dfc_flow.py, hailo-py, install_dfc.sh, hailo_stereo.alls
+  pi/                               Pi runner, scorer, demos, results, figures
+runs/kft_both_s60/                  training record of the shipped weights
 ```
 
----
+## Environment
 
-## What's left
-
-| # | item | severity |
-|---|---|---|
-| 1 | No on-device validation — no Hailo-15H board on this machine | **high** |
-| 2 | FPS/latency unmeasured — `hailo profiler` crashes (DFC bug, §3) | **high** |
-| 3 | Close-range (0–5 m) accuracy — improving, not architecture-limited | low |
-| 4 | Above-horizon drift — unsupervised, unscored, cosmetic | medium |
-| 5 | KITTI licence registration outstanding (CC BY-NC-SA, non-commercial) | low |
-
-Everything else — architecture, training, export, quantization, compilation —
-is done and measured. Get a Hailo-15H board and items 1–2 become measured
-instead of emulated.
-
-### Environment
-
-Ubuntu 22.04 / RTX 4060 for training (torch 2.3.0+cu121, numpy < 2.0); this
-Windows checkout for everything else (Python 3.11, torch 2.14+cu126, onnx
-**1.16.2** — 1.17+ is blocked by Application Control on `ml_dtypes`). Hailo
-Dataflow Compiler **5.4.0**, `--hw-arch hailo15h`, Linux-only. A ROS Humble
-`PYTHONPATH` breaks the DFC's pinned numpy/protobuf/tensorflow — use
-`deploy/hailo-py`, not a manual `activate`.
+- Training: Ubuntu 22.04, RTX 4060, torch 2.3.0+cu121, numpy < 2.0.
+- Compile: Hailo Dataflow Compiler 3.34 (the 5.x line dropped Hailo-8), Linux x86_64 only.
+- Pi: Raspberry Pi 5, Hailo-8 AI HAT+, HailoRT 4.23.0, PCIe Gen3.
+- Windows checkout: Python 3.11, onnx **1.16.2** (newer versions need `ml_dtypes`, which Application Control blocks).
